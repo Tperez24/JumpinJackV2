@@ -39,7 +39,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissiveMap:
-        m_Texture: {fileID: 2800000, guid: d7073cfe15a1a48bfb7ff59225052484, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MixTexture:
@@ -72,7 +72,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _FrenelAmount: 0.67
+    - _FrenelAmount: 0.62
     - _IsTextured: 1
     - _QueueControl: 0
     - _QueueOffset: 0
