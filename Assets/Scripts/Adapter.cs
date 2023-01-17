@@ -15,13 +15,12 @@ public static class Adapter
             };
         }
         
-        else
-            return action switch
-            {
-                ActionType.Fire => controller.Gamepad.FireButton1,
-                ActionType.Jump => controller.Gamepad.Jump1,
-                _ => throw new ArgumentOutOfRangeException(nameof(action), action, null)
-            };
+        return action switch
+        {
+            ActionType.Fire => controller.Gamepad.FireButton1,
+            ActionType.Jump => controller.Gamepad.Jump1,
+            _ => throw new ArgumentOutOfRangeException(nameof(action), action, null)
+        };
     }
     
     public enum ActionType

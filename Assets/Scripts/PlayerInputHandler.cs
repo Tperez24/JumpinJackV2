@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using static UnityEngine.InputSystem.InputAction;
 
@@ -16,8 +15,8 @@ public class PlayerInputHandler : MonoBehaviour
         _player = GetComponentInParent<Player>();
 
         _movePointer = _controller.Gamepad.Joystick;
-        _jumpButton = Adapter.GetAction(_playerInput.playerIndex,_controller,Adapter.ActionType.Jump);
-        _fireButton = Adapter.GetAction(_playerInput.playerIndex,_controller,Adapter.ActionType.Fire);
+        _jumpButton = Adapter.GetAction(_playerInput.playerIndex, _controller, Adapter.ActionType.Jump);
+        _fireButton = Adapter.GetAction(_playerInput.playerIndex, _controller, Adapter.ActionType.Fire);
 
         _movePointer.performed += OnMovePointer;
         _fireButton.started += StartFire;
