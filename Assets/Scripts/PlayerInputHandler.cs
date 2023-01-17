@@ -9,16 +9,14 @@ public class PlayerInputHandler : MonoBehaviour
 {
     private PlayerInput playerInput;
     private PlayerController _controller;
-    private Player mover;
+    private Player player;
     private InputAction movePointer;
-    
+
     public void Initialize()
     {
         playerInput = GetComponent<PlayerInput>();
-        var movers = FindObjectsOfType<Player>();
-        var index = playerInput.playerIndex;
-        mover = movers.FirstOrDefault(m => m.GetPlayerIndex() == index);
-
+        player = GetComponentInParent<Player>();
+      
         movePointer = _controller.Gamepad.Joystick;
         movePointer.performed += OnMovePointer;
     }
@@ -27,8 +25,11 @@ public class PlayerInputHandler : MonoBehaviour
     
     public void OnMovePointer(CallbackContext context)
     {
-        if(mover != null)
-            mover.MovePointer(context);
+       
+        if (player != null && player.playerIndex == context.control.device.deviceId)
+        {
+            Debug.Log("player index " + player.playerIndex + " controller id " + context.control.device.deviceId);
+            player.MovePointer(context);
+        }
     }
-
 }

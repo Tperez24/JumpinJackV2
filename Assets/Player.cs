@@ -19,7 +19,6 @@ public class Player : MonoBehaviour
         if(value == Vector2.zero) return;
         var direction = new Vector3(value.x, value.y, 0);
         pointer.transform.position = transform.position + direction;
-        Debug.Log(callbackContext.ReadValue<Vector2>());
     }
 
     public int GetPlayerIndex() => playerIndex;
@@ -31,7 +30,6 @@ public class Player : MonoBehaviour
         if (click.leftButton.isPressed)
         {
             playerRb.AddForce(click.position.ReadValue().normalized  *  force,ForceMode.Impulse);
-            Debug.Log(click.position.ReadValue().normalized);
         }
     }
 }

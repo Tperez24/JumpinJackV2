@@ -5,6 +5,7 @@ public class Creator : MonoBehaviour
 {
     public PlayerInputManager playerInputManager;
     private PlayerController _controller;
+    private int _playerIndex;
 
     private void Start()
     {
@@ -16,9 +17,10 @@ public class Creator : MonoBehaviour
 
     private void InitializePlayer(PlayerInput player)
     {
-        var playerBehaviour = player.gameObject.GetComponent<Player>();
-        var inputHandler = player.gameObject.GetComponentInChildren<PlayerInputHandler>();
+        var playerBehaviour = player.gameObject.GetComponentInParent<Player>();
+        var inputHandler = player.gameObject.GetComponent<PlayerInputHandler>();
 
+        playerBehaviour.playerIndex =player.devices[0].deviceId;
         inputHandler.SetController(_controller);
         inputHandler.Initialize();
     }
