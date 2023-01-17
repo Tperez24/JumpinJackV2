@@ -43,7 +43,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MixTexture:
-        m_Texture: {fileID: 2800000, guid: 82ac2cbb30200514ca3d072ea1369be0, type: 3}
+        m_Texture: {fileID: 2800000, guid: da480d4e86fe2ac48916be143ef6013e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_523e8cdffeff4c9cbc171c079adb5c08_Texture_1:
@@ -72,7 +72,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _FrenelAmount: 0.91
+    - _FrenelAmount: 0.7
     - _IsTextured: 0
     - _QueueControl: 0
     - _QueueOffset: 0
@@ -80,10 +80,10 @@ Material:
     - _ShadowOffset2: -0.82
     - _ShadowSmoothness: 0.91
     - _ShadowSmoothness2: 1.23
-    - _TilingMix: 4.55
+    - _TilingMix: 8.19
     m_Colors:
-    - _Color: {r: 0.8301887, g: 0.6956414, b: 0.48949805, a: 0}
-    - _EmissiveCol: {r: 7.245283, g: 0.5809898, b: 0.5809898, a: 0}
+    - _Color: {r: 0.49019608, g: 0.58870727, b: 0.83137256, a: 0}
+    - _EmissiveCol: {r: 0.5019608, g: 5.992157, b: 4.329412, a: 0}
     - _FresnelColor: {r: 1, g: 0, b: 0, a: 0}
-    - _ShadowColor: {r: 0.17688681, g: 0.23584908, b: 0.19860975, a: 0}
+    - _ShadowColor: {r: 0.2204076, g: 0.3679245, b: 0.2794144, a: 0}
   m_BuildTextureStacks: []
