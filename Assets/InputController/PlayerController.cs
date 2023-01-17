@@ -24,14 +24,23 @@ public partial class @PlayerController : IInputActionCollection2, IDisposable
     ""name"": ""PlayerController"",
     ""maps"": [
         {
-            ""name"": ""PlayerMap"",
+            ""name"": ""Gamepad"",
             ""id"": ""e10a52d5-4c0a-4d02-a6df-b70d9caf2c41"",
             ""actions"": [
                 {
-                    ""name"": ""New action"",
-                    ""type"": ""Button"",
+                    ""name"": ""FireButton"",
+                    ""type"": ""Value"",
                     ""id"": ""baa6c1e9-798e-4322-87f7-2cc4fa19d336"",
                     ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Joystick"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""e67c30e2-37bd-4c33-b1d0-81a55e71ccc5"",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -41,22 +50,144 @@ public partial class @PlayerController : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""3077e68b-d717-443d-8c33-6a15b221d504"",
-                    ""path"": ""<Keyboard>/g"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": ""Press(pressPoint=0.5,behavior=2)"",
+                    ""processors"": ""Normalize(max=1)"",
+                    ""groups"": """",
+                    ""action"": ""FireButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e53f836f-9c37-44c7-8591-180f3a2dc686"",
+                    ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""New action"",
+                    ""action"": ""FireButton"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""c968afd6-77be-4546-baed-4dd9b60ba684"",
+                    ""path"": ""2DVector(mode=2)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Joystick"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""fcc29610-c843-4ee9-bc33-aee170d46a53"",
+                    ""path"": ""<Gamepad>/leftStick/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Joystick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""326af8f7-453a-43e6-8625-cc55e728480c"",
+                    ""path"": ""<Gamepad>/leftStick/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Joystick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""284a8fcd-07e1-4e40-bcd0-4b419106a0e2"",
+                    ""path"": ""<Gamepad>/leftStick/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Joystick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""40362d92-c585-4127-b41a-3a9b3fd81a4e"",
+                    ""path"": ""<Gamepad>/leftStick/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Joystick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""2D Vector Keyboard"",
+                    ""id"": ""8178e49a-c654-43d6-9f5c-19a6667adbe1"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Joystick"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""d71f24b8-8eb6-4180-9242-622795dc8a1e"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Joystick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""4ac5b842-860c-4c03-b56a-c947a5f3c081"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Joystick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""0f2d48bc-63b9-4394-9f86-d930f405a798"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Joystick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""87907968-6fa9-46a8-a049-1bb0bb2718e0"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Joystick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
     ],
     ""controlSchemes"": []
 }");
-        // PlayerMap
-        m_PlayerMap = asset.FindActionMap("PlayerMap", throwIfNotFound: true);
-        m_PlayerMap_Newaction = m_PlayerMap.FindAction("New action", throwIfNotFound: true);
+        // Gamepad
+        m_Gamepad = asset.FindActionMap("Gamepad", throwIfNotFound: true);
+        m_Gamepad_FireButton = m_Gamepad.FindAction("FireButton", throwIfNotFound: true);
+        m_Gamepad_Joystick = m_Gamepad.FindAction("Joystick", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -113,40 +244,49 @@ public partial class @PlayerController : IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // PlayerMap
-    private readonly InputActionMap m_PlayerMap;
-    private IPlayerMapActions m_PlayerMapActionsCallbackInterface;
-    private readonly InputAction m_PlayerMap_Newaction;
-    public struct PlayerMapActions
+    // Gamepad
+    private readonly InputActionMap m_Gamepad;
+    private IGamepadActions m_GamepadActionsCallbackInterface;
+    private readonly InputAction m_Gamepad_FireButton;
+    private readonly InputAction m_Gamepad_Joystick;
+    public struct GamepadActions
     {
         private @PlayerController m_Wrapper;
-        public PlayerMapActions(@PlayerController wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Newaction => m_Wrapper.m_PlayerMap_Newaction;
-        public InputActionMap Get() { return m_Wrapper.m_PlayerMap; }
+        public GamepadActions(@PlayerController wrapper) { m_Wrapper = wrapper; }
+        public InputAction @FireButton => m_Wrapper.m_Gamepad_FireButton;
+        public InputAction @Joystick => m_Wrapper.m_Gamepad_Joystick;
+        public InputActionMap Get() { return m_Wrapper.m_Gamepad; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(PlayerMapActions set) { return set.Get(); }
-        public void SetCallbacks(IPlayerMapActions instance)
+        public static implicit operator InputActionMap(GamepadActions set) { return set.Get(); }
+        public void SetCallbacks(IGamepadActions instance)
         {
-            if (m_Wrapper.m_PlayerMapActionsCallbackInterface != null)
+            if (m_Wrapper.m_GamepadActionsCallbackInterface != null)
             {
-                @Newaction.started -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnNewaction;
-                @Newaction.performed -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnNewaction;
-                @Newaction.canceled -= m_Wrapper.m_PlayerMapActionsCallbackInterface.OnNewaction;
+                @FireButton.started -= m_Wrapper.m_GamepadActionsCallbackInterface.OnFireButton;
+                @FireButton.performed -= m_Wrapper.m_GamepadActionsCallbackInterface.OnFireButton;
+                @FireButton.canceled -= m_Wrapper.m_GamepadActionsCallbackInterface.OnFireButton;
+                @Joystick.started -= m_Wrapper.m_GamepadActionsCallbackInterface.OnJoystick;
+                @Joystick.performed -= m_Wrapper.m_GamepadActionsCallbackInterface.OnJoystick;
+                @Joystick.canceled -= m_Wrapper.m_GamepadActionsCallbackInterface.OnJoystick;
             }
-            m_Wrapper.m_PlayerMapActionsCallbackInterface = instance;
+            m_Wrapper.m_GamepadActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @Newaction.started += instance.OnNewaction;
-                @Newaction.performed += instance.OnNewaction;
-                @Newaction.canceled += instance.OnNewaction;
+                @FireButton.started += instance.OnFireButton;
+                @FireButton.performed += instance.OnFireButton;
+                @FireButton.canceled += instance.OnFireButton;
+                @Joystick.started += instance.OnJoystick;
+                @Joystick.performed += instance.OnJoystick;
+                @Joystick.canceled += instance.OnJoystick;
             }
         }
     }
-    public PlayerMapActions @PlayerMap => new PlayerMapActions(this);
-    public interface IPlayerMapActions
+    public GamepadActions @Gamepad => new GamepadActions(this);
+    public interface IGamepadActions
     {
-        void OnNewaction(InputAction.CallbackContext context);
+        void OnFireButton(InputAction.CallbackContext context);
+        void OnJoystick(InputAction.CallbackContext context);
     }
 }
