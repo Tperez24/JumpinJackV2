@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections;
+using System.Linq;
+using DefaultNamespace;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -10,7 +13,7 @@ public class Player : MonoBehaviour
     public float jumpForce;
 
     private float _actualTime;
-    private bool _canJump;
+    private bool _canJump = true,_canPunch = true;
     private GameData _data;
     
     public void ApplyForce()
@@ -18,10 +21,8 @@ public class Player : MonoBehaviour
         Debug.Log("Muevo al jugador " + playerIndex);
         
         force = GetForceOnTime(Time.time - _actualTime);
-
-        var dir = (pointer.transform.position - transform.position);
         
-        playerRb.AddForce(dir  *  force,ForceMode.VelocityChange);
+        Punch();
     }
 
     private float GetForceOnTime(float duration)
@@ -32,7 +33,14 @@ public class Player : MonoBehaviour
         return 10;
     }
 
-    public void StartCharging() => _actualTime =  Time.time;
+    public void StartCharging()
+    {
+        if(!_canPunch) return;
+        playerRb.velocity = new Vector2(0,-1.5f);
+        playerRb.useGravity = false;
+        
+        _actualTime = Time.time;
+    }
 
     public void MovePointer(Vector2 direction)
     {
@@ -44,6 +52,69 @@ public class Player : MonoBehaviour
 
     public void Jump()
     {
-        playerRb.AddForce(Vector3.up * jumpForce,ForceMode.Impulse);
+        if (!_canJump) return;
+        playerRb.velocity = new Vector2(playerRb.velocity.x,0);
+        AddForce(Vector3.up * _data.jumpForce, ForceMode.Impulse, () => { });
+        _canJump = !_canJump;
     }
+
+    private void Punch()
+    {
+        if(!_canPunch) return;
+
+        playerRb.useGravity = true;
+        playerRb.velocity = Vector3.zero;
+        _canPunch = false;
+        var pointerPos = pointer.transform.position;
+        var ownPos = transform.position;
+        var dir = (pointerPos -ownPos).normalized;
+        var distance = Vector2.Distance(pointerPos, ownPos);
+        RaycastHit hit;
+        
+        if (Physics.Raycast(transform.position, dir, out hit,distance) && hit.collider.gameObject.CompareTag(TagNames.Ground))
+        {
+            var dot = Vector3.Dot(-transform.up, dir);
+           //si angulo es -30 o 30
+           if (dot > 0.8)
+            {
+                playerRb.velocity = Vector3.zero;
+                AddForce(-dir * _data.bounceForce,ForceMode.VelocityChange,() => _canPunch = true);
+                return;
+            }
+        }
+        
+        AddForce(dir  *  force,ForceMode.VelocityChange,() => _canPunch = true);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag(TagNames.Ground)) _canJump = true;
+        if (collision.gameObject.CompareTag(TagNames.Player)) playerRb.useGravity = true;
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag(TagNames.Ground)) _canJump = false;
+    }
+
+    private void OnDrawGizmos()
+    {
+        var dir = (pointer.transform.position -transform.position).normalized;
+        Gizmos.DrawRay(transform.position,dir);
+    }
+
+    private void AddForce(Vector2 dir,ForceMode mode,Action action)
+    {
+        playerRb.AddForce(dir,mode);
+        StartCoroutine(StartCooldown(action,_data.punchCooldown));
+    }
+
+    private IEnumerator StartCooldown(Action onCooldownEnd,float time)
+    {
+        Debug.Log("Empiezo cooldown");
+        yield return new WaitForSecondsRealtime(time);
+        Debug.Log("Acabo cooldown");
+        onCooldownEnd?.Invoke();
+    }
+    
 }

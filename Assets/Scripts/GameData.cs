@@ -9,6 +9,7 @@ public class GameData : ScriptableObject
 
         public float jumpForce;
         public float punchCooldown;
+        public float bounceForce;
 }
 
 [Serializable]
