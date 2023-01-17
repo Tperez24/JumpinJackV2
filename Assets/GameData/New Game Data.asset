@@ -23,4 +23,6 @@ MonoBehaviour:
     forces: 7.5
   - time: 1
     forces: 10
-  jumpForce: 8
+  jumpForce: 10
+  punchCooldown: 1.5
+  bounceForce: 10
