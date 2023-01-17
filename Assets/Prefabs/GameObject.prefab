@@ -52,7 +52,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 120
   m_CollisionDetection: 0
 --- !u!23 &6953966266505777115
 MeshRenderer:
@@ -130,7 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerRb: {fileID: 6953966266505777109}
-  force: 0.15
+  force: 8
   pointer: {fileID: 6953966266541476418}
   playerIndex: 0
 --- !u!1 &6953966266541476418

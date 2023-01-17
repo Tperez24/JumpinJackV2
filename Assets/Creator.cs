@@ -20,7 +20,7 @@ public class Creator : MonoBehaviour
         var playerBehaviour = player.gameObject.GetComponentInParent<Player>();
         var inputHandler = player.gameObject.GetComponent<PlayerInputHandler>();
 
-        playerBehaviour.playerIndex =player.devices[0].deviceId;
+        playerBehaviour.playerIndex = player.devices[0].deviceId;
         inputHandler.SetController(_controller);
         inputHandler.Initialize();
     }
