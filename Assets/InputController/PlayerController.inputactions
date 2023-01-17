@@ -7,12 +7,12 @@
             "actions": [
                 {
                     "name": "FireButton",
-                    "type": "Value",
+                    "type": "Button",
                     "id": "baa6c1e9-798e-4322-87f7-2cc4fa19d336",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Joystick",
@@ -22,15 +22,42 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "c73e73df-dae9-4812-8bbf-cef80f712ff6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Jump1",
+                    "type": "Button",
+                    "id": "d991ee90-6681-49d4-872a-0315840de486",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "FireButton1",
+                    "type": "Button",
+                    "id": "5db8b14c-3481-409f-bb51-d4c16175e76e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
                 {
                     "name": "",
                     "id": "3077e68b-d717-443d-8c33-6a15b221d504",
-                    "path": "<Gamepad>/leftTrigger",
-                    "interactions": "Press(pressPoint=0.5,behavior=1)",
-                    "processors": "Normalize(max=1)",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "Press(behavior=1)",
+                    "processors": "",
                     "groups": "",
                     "action": "FireButton",
                     "isComposite": false,
@@ -44,6 +71,39 @@
                     "processors": "",
                     "groups": "",
                     "action": "Joystick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d6db72c2-6a7b-4c96-9277-43acbe526e47",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "Press(behavior=1)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FireButton1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cf275c66-1d44-4477-9118-e7314a314c45",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a81908f0-57c8-4b2f-b32b-ca2fcbd07942",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump1",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

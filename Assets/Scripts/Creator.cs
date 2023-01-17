@@ -4,6 +4,8 @@ using UnityEngine.InputSystem;
 public class Creator : MonoBehaviour
 {
     public PlayerInputManager playerInputManager;
+    public GameData data;
+    
     private PlayerController _controller;
     private int _playerIndex;
 
@@ -21,6 +23,8 @@ public class Creator : MonoBehaviour
         var inputHandler = player.gameObject.GetComponent<PlayerInputHandler>();
 
         playerBehaviour.playerIndex = player.devices[0].deviceId;
+        playerBehaviour.SetData(data);
+        
         inputHandler.SetController(_controller);
         inputHandler.Initialize();
     }

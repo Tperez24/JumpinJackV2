@@ -133,6 +133,7 @@ MonoBehaviour:
   force: 8
   pointer: {fileID: 6953966266541476418}
   playerIndex: 0
+  jumpForce: 5
 --- !u!1 &6953966266541476418
 GameObject:
   m_ObjectHideFlags: 0
@@ -223,6 +224,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6953966266505777110}
     m_Modifications:
+    - target: {fileID: 1430761935086817827, guid: 1ca985f4556519d42b1da3fe5dc49dd0,
+        type: 3}
+      propertyPath: m_DefaultControlScheme
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1531405226018728610, guid: 1ca985f4556519d42b1da3fe5dc49dd0,
         type: 3}
       propertyPath: m_RootOrder

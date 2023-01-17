@@ -29,12 +29,12 @@ public partial class @PlayerController : IInputActionCollection2, IDisposable
             ""actions"": [
                 {
                     ""name"": ""FireButton"",
-                    ""type"": ""Value"",
+                    ""type"": ""Button"",
                     ""id"": ""baa6c1e9-798e-4322-87f7-2cc4fa19d336"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": true
+                    ""initialStateCheck"": false
                 },
                 {
                     ""name"": ""Joystick"",
@@ -44,15 +44,42 @@ public partial class @PlayerController : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""c73e73df-dae9-4812-8bbf-cef80f712ff6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Jump1"",
+                    ""type"": ""Button"",
+                    ""id"": ""d991ee90-6681-49d4-872a-0315840de486"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""FireButton1"",
+                    ""type"": ""Button"",
+                    ""id"": ""5db8b14c-3481-409f-bb51-d4c16175e76e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
                 {
                     ""name"": """",
                     ""id"": ""3077e68b-d717-443d-8c33-6a15b221d504"",
-                    ""path"": ""<Gamepad>/leftTrigger"",
-                    ""interactions"": ""Press(pressPoint=0.5,behavior=1)"",
-                    ""processors"": ""Normalize(max=1)"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""processors"": """",
                     ""groups"": """",
                     ""action"": ""FireButton"",
                     ""isComposite"": false,
@@ -68,6 +95,39 @@ public partial class @PlayerController : IInputActionCollection2, IDisposable
                     ""action"": ""Joystick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d6db72c2-6a7b-4c96-9277-43acbe526e47"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FireButton1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cf275c66-1d44-4477-9118-e7314a314c45"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a81908f0-57c8-4b2f-b32b-ca2fcbd07942"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -78,6 +138,9 @@ public partial class @PlayerController : IInputActionCollection2, IDisposable
         m_Gamepad = asset.FindActionMap("Gamepad", throwIfNotFound: true);
         m_Gamepad_FireButton = m_Gamepad.FindAction("FireButton", throwIfNotFound: true);
         m_Gamepad_Joystick = m_Gamepad.FindAction("Joystick", throwIfNotFound: true);
+        m_Gamepad_Jump = m_Gamepad.FindAction("Jump", throwIfNotFound: true);
+        m_Gamepad_Jump1 = m_Gamepad.FindAction("Jump1", throwIfNotFound: true);
+        m_Gamepad_FireButton1 = m_Gamepad.FindAction("FireButton1", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -139,12 +202,18 @@ public partial class @PlayerController : IInputActionCollection2, IDisposable
     private IGamepadActions m_GamepadActionsCallbackInterface;
     private readonly InputAction m_Gamepad_FireButton;
     private readonly InputAction m_Gamepad_Joystick;
+    private readonly InputAction m_Gamepad_Jump;
+    private readonly InputAction m_Gamepad_Jump1;
+    private readonly InputAction m_Gamepad_FireButton1;
     public struct GamepadActions
     {
         private @PlayerController m_Wrapper;
         public GamepadActions(@PlayerController wrapper) { m_Wrapper = wrapper; }
         public InputAction @FireButton => m_Wrapper.m_Gamepad_FireButton;
         public InputAction @Joystick => m_Wrapper.m_Gamepad_Joystick;
+        public InputAction @Jump => m_Wrapper.m_Gamepad_Jump;
+        public InputAction @Jump1 => m_Wrapper.m_Gamepad_Jump1;
+        public InputAction @FireButton1 => m_Wrapper.m_Gamepad_FireButton1;
         public InputActionMap Get() { return m_Wrapper.m_Gamepad; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -160,6 +229,15 @@ public partial class @PlayerController : IInputActionCollection2, IDisposable
                 @Joystick.started -= m_Wrapper.m_GamepadActionsCallbackInterface.OnJoystick;
                 @Joystick.performed -= m_Wrapper.m_GamepadActionsCallbackInterface.OnJoystick;
                 @Joystick.canceled -= m_Wrapper.m_GamepadActionsCallbackInterface.OnJoystick;
+                @Jump.started -= m_Wrapper.m_GamepadActionsCallbackInterface.OnJump;
+                @Jump.performed -= m_Wrapper.m_GamepadActionsCallbackInterface.OnJump;
+                @Jump.canceled -= m_Wrapper.m_GamepadActionsCallbackInterface.OnJump;
+                @Jump1.started -= m_Wrapper.m_GamepadActionsCallbackInterface.OnJump1;
+                @Jump1.performed -= m_Wrapper.m_GamepadActionsCallbackInterface.OnJump1;
+                @Jump1.canceled -= m_Wrapper.m_GamepadActionsCallbackInterface.OnJump1;
+                @FireButton1.started -= m_Wrapper.m_GamepadActionsCallbackInterface.OnFireButton1;
+                @FireButton1.performed -= m_Wrapper.m_GamepadActionsCallbackInterface.OnFireButton1;
+                @FireButton1.canceled -= m_Wrapper.m_GamepadActionsCallbackInterface.OnFireButton1;
             }
             m_Wrapper.m_GamepadActionsCallbackInterface = instance;
             if (instance != null)
@@ -170,6 +248,15 @@ public partial class @PlayerController : IInputActionCollection2, IDisposable
                 @Joystick.started += instance.OnJoystick;
                 @Joystick.performed += instance.OnJoystick;
                 @Joystick.canceled += instance.OnJoystick;
+                @Jump.started += instance.OnJump;
+                @Jump.performed += instance.OnJump;
+                @Jump.canceled += instance.OnJump;
+                @Jump1.started += instance.OnJump1;
+                @Jump1.performed += instance.OnJump1;
+                @Jump1.canceled += instance.OnJump1;
+                @FireButton1.started += instance.OnFireButton1;
+                @FireButton1.performed += instance.OnFireButton1;
+                @FireButton1.canceled += instance.OnFireButton1;
             }
         }
     }
@@ -178,5 +265,8 @@ public partial class @PlayerController : IInputActionCollection2, IDisposable
     {
         void OnFireButton(InputAction.CallbackContext context);
         void OnJoystick(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
+        void OnJump1(InputAction.CallbackContext context);
+        void OnFireButton1(InputAction.CallbackContext context);
     }
 }
