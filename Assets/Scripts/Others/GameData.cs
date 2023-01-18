@@ -13,12 +13,15 @@ namespace Others
                 public float jumpForce;
                 public float punchCooldown;
                 public float bounceForce;
+                public float moveMultiplier;
+                public float recoveryMultiplyer;
         }
 
         [Serializable]
         public class ForceDictionary
         {
                 public float time;
+                public float recoveryTime;
                 public float forces;
         }
 }

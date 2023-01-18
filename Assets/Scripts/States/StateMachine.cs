@@ -6,14 +6,13 @@ namespace States
     public class StateMachine : MonoBehaviour
     {
         public StateType initialState;
-        public float checkExitRate;
 
         private State _currentState;
         private Player _player;
         private StateType _currentType;
         private float _actualTime;
         
-        public bool canPunch = true, canJump = true;
+        public bool canPunch = true, canJump = true, canMove = true;
 
         private void Awake()
         {
@@ -56,6 +55,7 @@ namespace States
                 StateType.OnChargingPunchGround => new OnChargingPunchGroundState(this,_player),
                 StateType.OnLaunchPunchGround => new OnLaunchPunchGroundState(this,_player),
                 StateType.OnDeath => new OnDeathState(this,_player),
+                StateType.OnRecovery => new OnRecoveryState(this,_player),
                 _ => throw new ArgumentOutOfRangeException(nameof(state), state, null)
             };
         }
@@ -70,6 +70,7 @@ namespace States
         OnHitStun,
         OnDeath,
         OnLaunchPunchAir,
-        OnLaunchPunchGround
+        OnLaunchPunchGround,
+        OnRecovery
     }
 }

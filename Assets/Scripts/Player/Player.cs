@@ -15,10 +15,11 @@ public class Player : MonoBehaviour
     public int playerIndex;
     public MeshRenderer mRenderer;
     public TextMeshProUGUI txtMeshPro;
-    
+
+    private Vector2 _direction;
     private GameData _data;
     private StateMachine _stateMachine;
-
+    
     private bool InThisState(StateType state) => _stateMachine.GetCurrentState() == state;
     
     public void ApplyForce()
@@ -30,11 +31,31 @@ public class Player : MonoBehaviour
     public void StartCharging()
     {
         if(!_stateMachine.canPunch) return;
-        if(InThisState(StateType.OnAir) || InThisState(StateType.OnLaunchPunchAir)) _stateMachine.ChangeState(StateType.OnChargingPunchAir);
-        if(InThisState(StateType.OnGround) || InThisState(StateType.OnLaunchPunchGround)) _stateMachine.ChangeState(StateType.OnChargingPunchGround);
+        if(InThisState(StateType.OnAir) || InThisState(StateType.OnLaunchPunchAir) || InThisState(StateType.OnRecovery)) _stateMachine.ChangeState(StateType.OnChargingPunchAir);
+        if(InThisState(StateType.OnGround) || InThisState(StateType.OnLaunchPunchGround) || InThisState(StateType.OnRecovery)) _stateMachine.ChangeState(StateType.OnChargingPunchGround);
     }
 
-    public void MovePointer(Vector2 direction)
+    public void Move(Vector2 direction)
+    {
+        if (InThisState(StateType.OnChargingPunchAir) || InThisState(StateType.OnChargingPunchGround))
+        {
+            MovePointer(direction);
+        }
+
+        if (InThisState(StateType.OnGround) || InThisState(StateType.OnAir) || InThisState(StateType.OnRecovery))
+        {
+            _direction = direction;
+        }
+    }
+
+    private void MovePlayer(Vector2 direction)
+    {
+        var position = transform.position;
+        var pos = new Vector2(position.x + (-direction.x * _data.moveMultiplier), position.y);
+        playerRb.MovePosition(pos);
+    }
+
+    private void MovePointer(Vector2 direction)
     {
         var dir = new Vector3(-direction.x, direction.y, 0);
         var finalDir = transform.position + dir;
@@ -49,10 +70,10 @@ public class Player : MonoBehaviour
 
     public void Jump()
     {
-        if(InThisState(StateType.OnGround)) _stateMachine.ChangeState(StateType.OnAir);
+        if(InThisState(StateType.OnGround) || InThisState(StateType.OnRecovery)) _stateMachine.ChangeState(StateType.OnAir);
     }
 
-    public void Punch(float force)
+    public void Punch(float force,float recoveryDuration)
     {
         var pointerPos = GetPointerPos();
         var ownPos = GetOwnPos();
@@ -65,27 +86,37 @@ public class Player : MonoBehaviour
             if (IsInAngle(Vector3.Dot(-transform.up, dir)))
             {
                 SetVelocity(Vector3.zero);
-                AddForce(-dir * _data.bounceForce,ForceMode.VelocityChange,() => _stateMachine.canPunch = true);
+                AddForce(-dir * _data.bounceForce,ForceMode.Impulse,EndCooldownLaunch);
+                StartRecovery(recoveryDuration);
                 return;
             }
         }
         
-        AddForce(dir  *  force,ForceMode.VelocityChange,() => _stateMachine.canPunch = true);
+        AddForce(dir  *  force,ForceMode.Impulse,EndCooldownLaunch);
+        StartRecovery(recoveryDuration);
     }
 
+    private void StartRecovery(float recoveryDuration)
+    {
+        StartCoroutine(StartCooldown(() =>
+        {
+            if(InThisState(StateType.OnLaunchPunchAir) || InThisState(StateType.OnLaunchPunchGround))
+                _stateMachine.ChangeState(StateType.OnRecovery);
+        },recoveryDuration));
+    }
     public bool IsInAngle(float angle) => (angle > _data.dotAngle);
-    private Vector3 GetOwnPos() => transform.position + new Vector3(0, 0.75f, 0);
-    private Vector3 GetPointerPos() => pointer.transform.position;
-    private static Vector3 GetDir(Vector3 pointerPos, Vector3 ownPos) => (pointerPos - ownPos).normalized;
+    public Vector3 GetOwnPos() => transform.position + new Vector3(0, 0.75f, 0);
+    public Vector3 GetPointerPos() => pointer.transform.position;
+    public Vector3 GetDir(Vector3 pointerPos, Vector3 ownPos) => (pointerPos - ownPos).normalized;
 
     private void OnCollisionEnter(Collision collision)
     {
         //TODO on ground aqui
-        if (IsOnGround(collision.gameObject)) _stateMachine.ChangeState(StateType.OnGround);
+        if (IsOnGround(collision.gameObject) && !InThisState(StateType.OnChargingPunchAir)) _stateMachine.ChangeState(StateType.OnGround);
         if (collision.gameObject.CompareTag(TagNames.Player)) playerRb.useGravity = true;
     }
 
-    private static bool IsOnGround(GameObject go) => go.CompareTag(TagNames.Ground);
+    public bool IsOnGround(GameObject go) => go.CompareTag(TagNames.Ground);
 
     private void OnDrawGizmos()
     {
@@ -99,6 +130,11 @@ public class Player : MonoBehaviour
     private void Update()
     {
         txtMeshPro.text = _stateMachine.GetCurrentState().ToString();
+
+        if (!_stateMachine.canMove)
+            return;
+
+        MovePlayer(_direction);
     }
 
     public void SetVelocity(Vector2 newVelocity) => playerRb.velocity = newVelocity;
@@ -115,12 +151,25 @@ public class Player : MonoBehaviour
         onCooldownEnd?.Invoke();
     }
 
+    private void EndCooldownLaunch()
+    {
+        _stateMachine.canPunch = true;
+    }
+
     public float GetForceOnTime(float duration)
     {
         foreach (var forceDictionary in _data.forces.Where(forceDictionary => duration <= forceDictionary.time))
             return forceDictionary.forces;
 
         return _data.forces.Last().forces;
+    }
+    
+    public float GetRecoveryTime(float duration)
+    {
+        foreach (var forceDictionary in _data.forces.Where(forceDictionary => duration <= forceDictionary.time))
+            return forceDictionary.recoveryTime;
+
+        return _data.forces.Last().recoveryTime;
     }
     
     public Rigidbody GetRigidBody() => playerRb;

@@ -47,7 +47,7 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnMovePointer(CallbackContext context)
     {
         if (IsActualDevice(context)) return;
-        _player.MovePointer(context.ReadValue<Vector2>());
+        _player.Move(context.ReadValue<Vector2>());
     }
 
     private bool IsActualDevice(CallbackContext context) =>

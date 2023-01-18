@@ -22,7 +22,6 @@ namespace States
 
                 protected void PreparePunch()
                 {
-                        player.GetRigidBody().useGravity = true;
                         player.SetVelocity(Vector3.zero);
                         stateMachine.canPunch = false;
                 }

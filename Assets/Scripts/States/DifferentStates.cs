@@ -9,12 +9,36 @@ namespace States
         public override void DoAction()
         {
             stateMachine.canJump = true;
+            stateMachine.canMove = true;
+            player.GetRigidBody().useGravity = true;
+            
+            player.SetVelocity(new Vector2(player.GetRigidBody().velocity.x * player.GetData().recoveryMultiplyer,player.GetRigidBody().velocity.y * player.GetData().recoveryMultiplyer));
             //Movimiento normal
         }
 
         public override void ExitState()
         {
             
+        }
+    }
+
+    public class OnRecoveryState : State
+    {
+        public OnRecoveryState(StateMachine stateMachine, Player player) : base(stateMachine, player) { }
+
+        public override void DoAction()
+        { 
+            RaycastHit hit;
+
+            if (Physics.Raycast(player.transform.position,Vector3.down,out hit,1f) && player.IsOnGround(hit.collider.gameObject))
+            {
+                stateMachine.canJump = true;
+            }
+
+            stateMachine.canMove = true;
+            player.GetRigidBody().useGravity = true;
+            
+            player.SetVelocity(new Vector2(player.GetRigidBody().velocity.x * player.GetData().recoveryMultiplyer,player.GetRigidBody().velocity.y * player.GetData().recoveryMultiplyer));
         }
     }
     
@@ -26,6 +50,7 @@ namespace States
         {
             //Movimiento leve
             if (!stateMachine.canJump) return;
+            stateMachine.canMove = true;
             player.GetRigidBody().useGravity = true;
             player.SetVelocity(new Vector2(player.GetRigidBody().velocity.x,0));
             player.AddForce(Vector3.up * player.GetData().jumpForce, ForceMode.Impulse, () => { });
@@ -46,7 +71,8 @@ namespace States
             //Quitar movimiento
             //Al lanzarlo quitar friccion durante x segundos
             if (!stateMachine.canPunch) return;
-            player.SetVelocity(new Vector2(0,0));
+            stateMachine.canMove = false;
+            player.SetVelocity(new Vector2(0,-1.5f));
             player.GetRigidBody().useGravity = false;
         
             stateMachine.SetActualTime(Time.time);
@@ -68,9 +94,10 @@ namespace States
             //Quitar movimiento
             //Al lanzarlo quitar friccion durante x segundos
             if (!stateMachine.canPunch) return;
+            stateMachine.canMove = false;
             PreparePunch();
-            player.Punch(player.GetForceOnTime(Time.time - stateMachine.GetActualTime()));
-            
+            var duration = Time.time - stateMachine.GetActualTime();
+            player.Punch(player.GetForceOnTime(duration),player.GetRecoveryTime(duration));
         }
 
         public override void ExitState()
@@ -104,6 +131,7 @@ namespace States
             //Quitar gravedad y aplicar fuerza hacia abajo lenta
             //No nos podemos mover
             if (!stateMachine.canPunch) return;
+            stateMachine.canMove = false;
             player.SetVelocity(new Vector2(0, -1.5f));
             player.GetRigidBody().useGravity = false;
 
@@ -128,8 +156,10 @@ namespace States
             //No nos podemos mover
             if (!stateMachine.canPunch) return;
             
+            stateMachine.canMove = false;
             PreparePunch();
-            player.Punch(player.GetForceOnTime(Time.time - stateMachine.GetActualTime()));
+            var duration = Time.time - stateMachine.GetActualTime();
+            player.Punch(player.GetForceOnTime(duration),player.GetRecoveryTime(duration));
         }
 
         public override void ExitState()
