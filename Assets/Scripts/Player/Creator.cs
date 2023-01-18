@@ -5,9 +5,11 @@ public class Creator : MonoBehaviour
 {
     public PlayerInputManager playerInputManager;
     public GameData data;
+    public Transform firstPlayerSpawn, secondPlayerSpawn;
     
     private PlayerController _controller;
     private int _playerIndex;
+
 
     private void Start()
     {
@@ -27,5 +29,11 @@ public class Creator : MonoBehaviour
         
         inputHandler.SetController(_controller);
         inputHandler.Initialize();
+
+        playerBehaviour.gameObject.transform.position = _playerIndex == 0
+            ? firstPlayerSpawn.position
+            : secondPlayerSpawn.position;
+        
+        _playerIndex++;
     }
 }

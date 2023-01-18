@@ -98,7 +98,7 @@ public class Player : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        var position = transform.position;
+        var position = transform.position + new Vector3(0,1.3f,0);
         var dir = (pointer.transform.position -position).normalized;
         Gizmos.DrawRay(position,dir);
     }
