@@ -14,17 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   forces:
   - time: 0.1
+    recoveryTime: 0
     forces: 0
   - time: 0.25
-    forces: 2.5
-  - time: 0.5
+    recoveryTime: 0.1
     forces: 5
-  - time: 0.75
-    forces: 7.5
-  - time: 1
+  - time: 0.5
+    recoveryTime: 0.2
     forces: 10
+  - time: 0.75
+    recoveryTime: 0.3
+    forces: 15
+  - time: 1
+    recoveryTime: 0.3
+    forces: 20
   dotAngle: 0.707
   jumpForce: 7
   punchCooldown: 1.5
   bounceForce: 10
-  moveMultiplier: 0.5
+  moveMultiplier: 0.1
+  recoveryMultiplyer: 0.2
