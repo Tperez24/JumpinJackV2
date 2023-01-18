@@ -1,52 +1,54 @@
 using System;
-using States;
 using UnityEngine;
 
-public class StateMachine : MonoBehaviour
+namespace States
 {
-    public State initialState;
-    public float checkExitRate;
-
-    private State _currentState;
-
-    private void Awake()
+    public class StateMachine : MonoBehaviour
     {
-        _currentState = initialState;
-        //_currentState.enabled = true;
-        
-        InvokeRepeating(nameof(Check), 0, checkExitRate);
-    }
+        public State initialState;
+        public float checkExitRate;
 
-    private void OnDestroy() => CancelInvoke(nameof(Check));
+        private State _currentState;
 
-    private void Check() => _currentState.CheckExit();
-
-    public void ChangeState(State newState)
-    {
-        //_currentState.enabled = false;
-        _currentState = newState;
-        //_currentState.enabled = true;
-    }
-
-    private State GetState(StateType state)
-    {
-        return state switch
+        private void Awake()
         {
-            StateType.OnAir => new OnAir(this),
-            StateType.OnGround => new OnGroundState(this),
-            StateType.OnHitStun => new HitStunState(this),
-            StateType.OnChargingPunchAir => new OnChargingPunchAirState(this),
-            StateType.OnChargingPunchGround => new OnChargingPunchGroundState(this),
-            _ => throw new ArgumentOutOfRangeException(nameof(state), state, null)
-        };
-    }
-}
+            _currentState = initialState;
+            //_currentState.enabled = true;
+        
+            InvokeRepeating(nameof(Check), 0, checkExitRate);
+        }
 
-public enum StateType
-{
-    OnGround,
-    OnAir,
-    OnChargingPunchGround,
-    OnChargingPunchAir,
-    OnHitStun
+        private void OnDestroy() => CancelInvoke(nameof(Check));
+
+        private void Check() => _currentState.CheckExit();
+
+        public void ChangeState(State newState)
+        {
+            //_currentState.enabled = false;
+            _currentState = newState;
+            //_currentState.enabled = true;
+        }
+
+        private State GetState(StateType state)
+        {
+            return state switch
+            {
+                StateType.OnAir => new OnAir(this),
+                StateType.OnGround => new OnGroundState(this),
+                StateType.OnHitStun => new HitStunState(this),
+                StateType.OnChargingPunchAir => new OnChargingPunchAirState(this),
+                StateType.OnChargingPunchGround => new OnChargingPunchGroundState(this),
+                _ => throw new ArgumentOutOfRangeException(nameof(state), state, null)
+            };
+        }
+    }
+
+    public enum StateType
+    {
+        OnGround,
+        OnAir,
+        OnChargingPunchGround,
+        OnChargingPunchAir,
+        OnHitStun
+    }
 }

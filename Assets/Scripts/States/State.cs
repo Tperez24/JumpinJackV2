@@ -1,15 +1,17 @@
-using UnityEngine;
-
 //[RequireComponent(typeof(StateMachine))]
-public class State //: MonoBehaviour
+namespace States
 {
-        protected StateMachine StateMachine;
-
-        /*private void Awake()
+        public class State //: MonoBehaviour
         {
+                protected StateMachine stateMachine;
+
+                /*private void Awake()
+                {
                 StateMachine = GetComponent<StateMachine>();
-        }*/
-        
-        public State(StateMachine stateMachine) => StateMachine = stateMachine;
-        public virtual void CheckExit() {}
+                }*/
+
+                protected State(StateMachine stateMachine) => this.stateMachine = stateMachine;
+                public virtual void DoAction() {}
+                public virtual void CheckExit() {}
+        }
 }
