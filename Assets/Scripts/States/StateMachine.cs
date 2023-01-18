@@ -12,7 +12,7 @@ namespace States
         private StateType _currentType;
         private float _actualTime;
         
-        public bool canPunch = true, canJump = true, canMove = true;
+        public bool canPunch = true, canJump = true, canMove = true,isCharging;
 
         private void Awake()
         {

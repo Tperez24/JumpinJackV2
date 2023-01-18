@@ -14,7 +14,8 @@ namespace Others
                 public float punchCooldown;
                 public float bounceForce;
                 public float moveMultiplier;
-                public float recoveryMultiplyer;
+                public float recoveryMultiplier;
+                public Vector3 punchScale;
         }
 
         [Serializable]

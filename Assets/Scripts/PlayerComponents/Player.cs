@@ -3,6 +3,7 @@ using System.Collections;
 using System.Linq;
 using DefaultNamespace;
 using Others;
+using PlayerComponents;
 using States;
 using TMPro;
 using UnityEngine;
@@ -14,11 +15,14 @@ public class Player : MonoBehaviour
     public GameObject pointer;
     public int playerIndex;
     public MeshRenderer mRenderer;
+    public SpriteRenderer punchSprite;
     public TextMeshProUGUI txtMeshPro;
-
+    public Fist fist;
+    
     private Vector2 _direction;
     private GameData _data;
     private StateMachine _stateMachine;
+    private Vector3 _initialScale;
     
     private bool InThisState(StateType state) => _stateMachine.GetCurrentState() == state;
     
@@ -58,12 +62,18 @@ public class Player : MonoBehaviour
     private void MovePointer(Vector2 direction)
     {
         var dir = new Vector3(-direction.x, direction.y, 0);
-        var finalDir = transform.position + dir;
+        var position = transform.position;
+        var finalDir = position + dir * 1.5f;
         pointer.transform.position = new Vector3(finalDir.x,finalDir.y + 0.75f, finalDir.z);
+        pointer.transform.LookAt(transform);
+        var color = punchSprite.color;
+        punchSprite.color = new Color(color.r, color.g, color.b,
+            Vector2.Distance(new Vector2(position.x,position.y + 0.75f), pointer.transform.position));
     }
 
     public void SetData(GameData data)
     {
+        _initialScale = punchSprite.transform.localScale;
         TryGetComponent(out _stateMachine);
         _data = data;
     }
@@ -104,10 +114,29 @@ public class Player : MonoBehaviour
                 _stateMachine.ChangeState(StateType.OnRecovery);
         },recoveryDuration));
     }
+
+    public void StartGrowingSprite()
+    {
+        StartCoroutine(RepeatLerp(punchSprite.transform.localScale, _data.punchScale,
+            _data.forces.Last().time));
+    }
+
+    private IEnumerator RepeatLerp(Vector3 scaleFrom,Vector3 scaleTo,float time)
+    {
+        var i = 0f;
+        var rate = (1 / time) * 2f;
+        do
+        {
+            i += Time.deltaTime * rate;
+            punchSprite.transform.localScale = Vector3.Lerp(scaleFrom, scaleTo, i);
+            yield return null;
+            
+        } while (i < _data.forces.Last().time && _stateMachine.isCharging);
+    }
     public bool IsInAngle(float angle) => (angle > _data.dotAngle);
     public Vector3 GetOwnPos() => transform.position + new Vector3(0, 0.75f, 0);
     public Vector3 GetPointerPos() => pointer.transform.position;
-    public Vector3 GetDir(Vector3 pointerPos, Vector3 ownPos) => (pointerPos - ownPos).normalized;
+    public static Vector3 GetDir(Vector3 pointerPos, Vector3 ownPos) => (pointerPos - ownPos).normalized;
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -116,7 +145,7 @@ public class Player : MonoBehaviour
         if (collision.gameObject.CompareTag(TagNames.Player)) playerRb.useGravity = true;
     }
 
-    public bool IsOnGround(GameObject go) => go.CompareTag(TagNames.Ground);
+    public static bool IsOnGround(GameObject go) => go.CompareTag(TagNames.Ground);
 
     private void OnDrawGizmos()
     {
@@ -171,7 +200,23 @@ public class Player : MonoBehaviour
 
         return _data.forces.Last().recoveryTime;
     }
+
+    public void SetForceToFist(float fistForce) => fist.SetForce(fistForce);
     
     public Rigidbody GetRigidBody() => playerRb;
     public GameData GetData() => _data;
+
+    public void ResizeSprite()
+    {
+        punchSprite.transform.localScale = _initialScale;
+        var color = punchSprite.color;
+        color = new Color(color.r, color.g, color.b, 0);
+        punchSprite.color = color;
+    }
+
+    public void ApplyPunchForce((float force,Vector3 direction) obj)
+    {
+        Debug.Log("Me golpiaste" + obj.force);
+        playerRb.AddForce(obj.direction * obj.force);
+    }
 }
