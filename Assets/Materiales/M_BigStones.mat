@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_BigStones
-  m_Shader: {fileID: -6465566751694194690, guid: 3dae8500b9d386b4595418316434e5d2,
+  m_Shader: {fileID: -6465566751694194690, guid: 9f11df50e8c2f7a46aeacbaace5766cd,
     type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -36,6 +36,10 @@ Material:
     m_TexEnvs:
     - _AO:
         m_Texture: {fileID: 2800000, guid: 41f4e399a3268a440adc504396751943, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissiveMask:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Normal:
@@ -59,5 +63,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
-    - _Color: {r: 0.53475434, g: 0.56328803, b: 0.5754717, a: 0}
+    - _Color: {r: 0.5242524, g: 0.5768178, b: 0.5943396, a: 0}
+    - _EmissiveColor: {r: 0, g: 0, b: 0, a: 0}
+    - _GrassColor: {r: 0.49261302, g: 0.7735849, b: 0.50720894, a: 0}
   m_BuildTextureStacks: []

@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: M_BigStonesAway
+  m_Name: M_Mountains
   m_Shader: {fileID: -6465566751694194690, guid: 9f11df50e8c2f7a46aeacbaace5766cd,
     type: 3}
   m_ValidKeywords: []
@@ -67,7 +67,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
-    - _Color: {r: 0.56585974, g: 0.6252988, b: 0.6415094, a: 0}
+    - _Color: {r: 0.061676756, g: 0.20754719, b: 0.102091, a: 0}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 0}
-    - _GrassColor: {r: 0.59674263, g: 0.8490566, b: 0.60856986, a: 0}
+    - _GrassColor: {r: 0.5800552, g: 0.745283, b: 0.710424, a: 0}
   m_BuildTextureStacks: []
