@@ -11,7 +11,7 @@
 
         public override void CheckExit()
         {
-            base.CheckExit();
+            //stateMachine.ChangeState();
         }
     }
     
@@ -26,7 +26,7 @@
 
         public override void CheckExit()
         {
-            base.CheckExit();
+            //stateMachine.ChangeState();
         }
     }
     public class OnChargingPunchGroundState : State
@@ -42,6 +42,7 @@
         public override void CheckExit()
         {
             //reiniciar
+            //stateMachine.ChangeState();
         }
     }
     public class HitStunState : State
@@ -58,6 +59,7 @@
         public override void CheckExit()
         {
             //Reiniciar inercias
+            //stateMachine.ChangeState();
         }
     }
     
@@ -75,6 +77,7 @@
         {
             //Añadir fuerza y reiniciar gravedad
             //Cooldown
+            //stateMachine.ChangeState();
         }
     }
 }
