@@ -1,3 +1,4 @@
+using Others;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,6 +7,7 @@ public class Creator : MonoBehaviour
     public PlayerInputManager playerInputManager;
     public GameData data;
     public Transform firstPlayerSpawn, secondPlayerSpawn;
+    public Material firstPlayerMaterial, secondPlayerMaterial;
     
     private PlayerController _controller;
     private int _playerIndex;
@@ -30,9 +32,16 @@ public class Creator : MonoBehaviour
         inputHandler.SetController(_controller);
         inputHandler.Initialize();
 
-        playerBehaviour.gameObject.transform.position = _playerIndex == 0
-            ? firstPlayerSpawn.position
-            : secondPlayerSpawn.position;
+        if (_playerIndex == 0)
+        {
+            playerBehaviour.gameObject.transform.position = firstPlayerSpawn.position;
+            playerBehaviour.SetMaterial(firstPlayerMaterial);
+        }
+        else
+        {
+            playerBehaviour.gameObject.transform.position = secondPlayerSpawn.position;
+            playerBehaviour.SetMaterial(secondPlayerMaterial);
+        }
         
         _playerIndex++;
     }

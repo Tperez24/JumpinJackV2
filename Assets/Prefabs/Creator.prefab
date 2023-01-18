@@ -113,6 +113,9 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: f8bd3061adbb5384192298fb9d21fd6f, type: 2}
   firstPlayerSpawn: {fileID: 57716643}
   secondPlayerSpawn: {fileID: 1274274547}
+  firstPlayerMaterial: {fileID: 2100000, guid: 874cf0c8dc64d024faab7db54871c676, type: 2}
+  secondPlayerMaterial: {fileID: 2100000, guid: 9fe61c36a84c0804fab041dad8d15e12,
+    type: 2}
 --- !u!1 &2497123787240919904
 GameObject:
   m_ObjectHideFlags: 0
@@ -179,7 +182,7 @@ MonoBehaviour:
       m_SingletonActionBindings: []
       m_Flags: 0
     m_Reference: {fileID: 0}
-  m_PlayerPrefab: {fileID: 7831019337392629409, guid: a409b6d5b2d71ba4c84b52a5ff0e45dc,
+  m_PlayerPrefab: {fileID: 2150023189615654635, guid: 02580b631fec2d7439d0f19b908216ea,
     type: 3}
   m_SplitScreen: 0
   m_MaintainAspectRatioInSplitScreen: 0

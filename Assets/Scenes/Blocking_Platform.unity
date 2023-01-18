@@ -457,12 +457,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Creator
       objectReference: {fileID: 0}
-    - target: {fileID: 2497123787240919919, guid: dee5cb498dc3d7848bebdacfc95552fd,
-        type: 3}
-      propertyPath: m_PlayerPrefab
-      value: 
-      objectReference: {fileID: 2150023189615654635, guid: 02580b631fec2d7439d0f19b908216ea,
-        type: 3}
     - target: {fileID: 5356523690920347155, guid: dee5cb498dc3d7848bebdacfc95552fd,
         type: 3}
       propertyPath: m_RootOrder
@@ -1282,7 +1276,7 @@ PrefabInstance:
     - target: {fileID: 5928207326293652462, guid: 5ff1ee877d6b9bc498c5d4c004268509,
         type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5928207326293652462, guid: 5ff1ee877d6b9bc498c5d4c004268509,
         type: 3}

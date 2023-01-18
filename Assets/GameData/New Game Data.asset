@@ -23,6 +23,8 @@ MonoBehaviour:
     forces: 7.5
   - time: 1
     forces: 10
-  jumpForce: 10
+  dotAngle: 0.707
+  jumpForce: 7
   punchCooldown: 1.5
   bounceForce: 10
+  moveMultiplier: 0.5
