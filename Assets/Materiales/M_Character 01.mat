@@ -34,6 +34,18 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _BaseTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissiveMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MixTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -48,8 +60,18 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _FrenelAmount: 0.67
+    - _Intensity: 0
+    - _IsTextured: 0
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _ShadowOffset: 1
+    - _ShadowOffset2: 1
+    - _ShadowSmoothness: 0
+    - _ShadowSmoothness2: 0
+    - _TilingMix: 0
     m_Colors:
     - _Color: {r: 0, g: 0.5596921, b: 0.8018868, a: 0}
+    - _EmissiveCol: {r: 0, g: 0, b: 0, a: 0}
+    - _ShadowColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
