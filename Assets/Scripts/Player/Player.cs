@@ -10,10 +10,9 @@ public class Player : MonoBehaviour
     public float force = 0.2f;
     public GameObject pointer;
     public int playerIndex;
-    public float jumpForce;
 
     private float _actualTime;
-    private bool _canJump = true,_canPunch = true;
+    private bool _canJump = true, _canPunch = true;
     private GameData _data;
     
     public void ApplyForce()
@@ -35,7 +34,7 @@ public class Player : MonoBehaviour
 
     public void StartCharging()
     {
-        if(!_canPunch) return;
+        if (!_canPunch) return;
         playerRb.velocity = new Vector2(0,-1.5f);
         playerRb.useGravity = false;
         
@@ -44,8 +43,9 @@ public class Player : MonoBehaviour
 
     public void MovePointer(Vector2 direction)
     {
-        var dir = new Vector3(direction.x, direction.y, 0);
-        pointer.transform.position = transform.position + dir;
+        var dir = new Vector3(-direction.x, direction.y, 0);
+        var finalDir = transform.position + dir;
+        pointer.transform.position = new Vector3(finalDir.x,finalDir.y + 0.75f, finalDir.z);
     }
 
     public void SetData(GameData data) => _data = data;
@@ -60,13 +60,13 @@ public class Player : MonoBehaviour
 
     private void Punch()
     {
-        if(!_canPunch) return;
+        if (!_canPunch) return;
 
         playerRb.useGravity = true;
         playerRb.velocity = Vector3.zero;
         _canPunch = false;
         var pointerPos = pointer.transform.position;
-        var ownPos = transform.position;
+        var ownPos = transform.position + new Vector3(0,0.75f,0);
         var dir = (pointerPos -ownPos).normalized;
         var distance = Vector2.Distance(pointerPos, ownPos);
         RaycastHit hit;
@@ -74,8 +74,8 @@ public class Player : MonoBehaviour
         if (Physics.Raycast(transform.position, dir, out hit,distance) && hit.collider.gameObject.CompareTag(TagNames.Ground))
         {
             var dot = Vector3.Dot(-transform.up, dir);
-           //si angulo es -30 o 30
-           if (dot > 0.8)
+           //si angulo es -45 o 45
+           if (dot > 0.707)
             {
                 playerRb.velocity = Vector3.zero;
                 AddForce(-dir * _data.bounceForce,ForceMode.VelocityChange,() => _canPunch = true);
@@ -99,8 +99,9 @@ public class Player : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        var dir = (pointer.transform.position -transform.position).normalized;
-        Gizmos.DrawRay(transform.position,dir);
+        var position = transform.position + new Vector3(0,0.75f,0);
+        var dir = (pointer.transform.position -position).normalized;
+        Gizmos.DrawRay(position,dir);
     }
 
     private void AddForce(Vector2 dir,ForceMode mode,Action action)
@@ -109,7 +110,7 @@ public class Player : MonoBehaviour
         StartCoroutine(StartCooldown(action,_data.punchCooldown));
     }
 
-    private IEnumerator StartCooldown(Action onCooldownEnd,float time)
+    private static IEnumerator StartCooldown(Action onCooldownEnd,float time)
     {
         Debug.Log("Empiezo cooldown");
         yield return new WaitForSecondsRealtime(time);
