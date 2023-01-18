@@ -2,43 +2,36 @@
 using System.Collections;
 using System.Linq;
 using DefaultNamespace;
+using Others;
+using States;
+using TMPro;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     public Rigidbody playerRb;
-    public float force = 0.2f;
+    
     public GameObject pointer;
     public int playerIndex;
-
-    private float _actualTime;
-    private bool _canJump = true, _canPunch = true;
+    public MeshRenderer mRenderer;
+    public TextMeshProUGUI txtMeshPro;
+    
     private GameData _data;
+    private StateMachine _stateMachine;
+
+    private bool InThisState(StateType state) => _stateMachine.GetCurrentState() == state;
     
     public void ApplyForce()
     {
-        Debug.Log("Muevo al jugador " + playerIndex);
-        
-        force = GetForceOnTime(Time.time - _actualTime);
-        
-        Punch();
+        if (InThisState(StateType.OnChargingPunchAir) || InThisState(StateType.OnChargingPunchGround))
+            _stateMachine.ExitState();
     }
-
-    private float GetForceOnTime(float duration)
-    {
-        foreach (var forceDictionary in _data.forces.Where(forceDictionary => duration <= forceDictionary.time))
-            return forceDictionary.forces;
-
-        return 10;
-    }
-
+    
     public void StartCharging()
     {
-        if (!_canPunch) return;
-        playerRb.velocity = new Vector2(0,-1.5f);
-        playerRb.useGravity = false;
-        
-        _actualTime = Time.time;
+        if(!_stateMachine.canPunch) return;
+        if(InThisState(StateType.OnAir) || InThisState(StateType.OnLaunchPunchAir)) _stateMachine.ChangeState(StateType.OnChargingPunchAir);
+        if(InThisState(StateType.OnGround) || InThisState(StateType.OnLaunchPunchGround)) _stateMachine.ChangeState(StateType.OnChargingPunchGround);
     }
 
     public void MovePointer(Vector2 direction)
@@ -48,74 +41,88 @@ public class Player : MonoBehaviour
         pointer.transform.position = new Vector3(finalDir.x,finalDir.y + 0.75f, finalDir.z);
     }
 
-    public void SetData(GameData data) => _data = data;
+    public void SetData(GameData data)
+    {
+        TryGetComponent(out _stateMachine);
+        _data = data;
+    }
 
     public void Jump()
     {
-        if (!_canJump) return;
-        playerRb.velocity = new Vector2(playerRb.velocity.x,0);
-        AddForce(Vector3.up * _data.jumpForce, ForceMode.Impulse, () => { });
-        _canJump = !_canJump;
+        if(InThisState(StateType.OnGround)) _stateMachine.ChangeState(StateType.OnAir);
     }
 
-    private void Punch()
+    public void Punch(float force)
     {
-        if (!_canPunch) return;
-
-        playerRb.useGravity = true;
-        playerRb.velocity = Vector3.zero;
-        _canPunch = false;
-        var pointerPos = pointer.transform.position;
-        var ownPos = transform.position + new Vector3(0,0.75f,0);
-        var dir = (pointerPos -ownPos).normalized;
+        var pointerPos = GetPointerPos();
+        var ownPos = GetOwnPos();
+        var dir = GetDir(pointerPos, ownPos);
         var distance = Vector2.Distance(pointerPos, ownPos);
         RaycastHit hit;
         
-        if (Physics.Raycast(transform.position, dir, out hit,distance) && hit.collider.gameObject.CompareTag(TagNames.Ground))
+        if (Physics.Raycast(transform.position, dir, out hit,distance) && IsOnGround(hit.collider.gameObject))
         {
-            var dot = Vector3.Dot(-transform.up, dir);
-           //si angulo es -45 o 45
-           if (dot > 0.707)
+            if (IsInAngle(Vector3.Dot(-transform.up, dir)))
             {
-                playerRb.velocity = Vector3.zero;
-                AddForce(-dir * _data.bounceForce,ForceMode.VelocityChange,() => _canPunch = true);
+                SetVelocity(Vector3.zero);
+                AddForce(-dir * _data.bounceForce,ForceMode.VelocityChange,() => _stateMachine.canPunch = true);
                 return;
             }
         }
         
-        AddForce(dir  *  force,ForceMode.VelocityChange,() => _canPunch = true);
+        AddForce(dir  *  force,ForceMode.VelocityChange,() => _stateMachine.canPunch = true);
     }
+
+    public bool IsInAngle(float angle) => (angle > _data.dotAngle);
+    private Vector3 GetOwnPos() => transform.position + new Vector3(0, 0.75f, 0);
+    private Vector3 GetPointerPos() => pointer.transform.position;
+    private static Vector3 GetDir(Vector3 pointerPos, Vector3 ownPos) => (pointerPos - ownPos).normalized;
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag(TagNames.Ground)) _canJump = true;
+        //TODO on ground aqui
+        if (IsOnGround(collision.gameObject)) _stateMachine.ChangeState(StateType.OnGround);
         if (collision.gameObject.CompareTag(TagNames.Player)) playerRb.useGravity = true;
     }
 
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.CompareTag(TagNames.Ground)) _canJump = false;
-    }
+    private static bool IsOnGround(GameObject go) => go.CompareTag(TagNames.Ground);
 
     private void OnDrawGizmos()
     {
-        var position = transform.position + new Vector3(0,0.75f,0);
-        var dir = (pointer.transform.position -position).normalized;
+        var position = GetOwnPos();
+        var dir = GetDir(GetPointerPos(), position);
         Gizmos.DrawRay(position,dir);
     }
 
-    private void AddForce(Vector2 dir,ForceMode mode,Action action)
+    public void SetMaterial(Material mat) => mRenderer.material = mat;
+    
+    private void Update()
+    {
+        txtMeshPro.text = _stateMachine.GetCurrentState().ToString();
+    }
+
+    public void SetVelocity(Vector2 newVelocity) => playerRb.velocity = newVelocity;
+    
+    public void AddForce(Vector2 dir,ForceMode mode,Action action)
     {
         playerRb.AddForce(dir,mode);
         StartCoroutine(StartCooldown(action,_data.punchCooldown));
     }
 
-    private static IEnumerator StartCooldown(Action onCooldownEnd,float time)
+    public static IEnumerator StartCooldown(Action onCooldownEnd,float time)
     {
-        Debug.Log("Empiezo cooldown");
         yield return new WaitForSecondsRealtime(time);
-        Debug.Log("Acabo cooldown");
         onCooldownEnd?.Invoke();
     }
+
+    public float GetForceOnTime(float duration)
+    {
+        foreach (var forceDictionary in _data.forces.Where(forceDictionary => duration <= forceDictionary.time))
+            return forceDictionary.forces;
+
+        return _data.forces.Last().forces;
+    }
     
+    public Rigidbody GetRigidBody() => playerRb;
+    public GameData GetData() => _data;
 }
