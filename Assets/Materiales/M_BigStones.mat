@@ -38,6 +38,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: 41f4e399a3268a440adc504396751943, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _EmissiveMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Normal:
         m_Texture: {fileID: 2800000, guid: 683428cd76b62f646bf35219e1fad910, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -59,5 +63,6 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
-    - _Color: {r: 0.53475434, g: 0.56328803, b: 0.5754717, a: 0}
+    - _Color: {r: 0.7073247, g: 0.7760971, b: 0.8018868, a: 0}
+    - _EmissiveColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Shader Graphs_SG_Fog
+  m_Name: Shader Graphs_SG_Fog 1
   m_Shader: {fileID: -6465566751694194690, guid: 2876b78eeca4ebd47a5f2686f9841fef,
     type: 3}
   m_ValidKeywords: []
@@ -39,7 +39,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.12967247, g: 0.8867924, b: 0.813817, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &4967586694480725576
 MonoBehaviour:

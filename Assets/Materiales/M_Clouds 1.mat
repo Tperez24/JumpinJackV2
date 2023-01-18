@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Shader Graphs_SG_Fog
-  m_Shader: {fileID: -6465566751694194690, guid: 2876b78eeca4ebd47a5f2686f9841fef,
+  m_Name: M_Clouds 1
+  m_Shader: {fileID: -6465566751694194690, guid: ff109b3af07b51f4da38ec08349db0a8,
     type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -35,13 +35,13 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Distance: 155.7
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _Speed: 0.008
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _CloudColor: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
---- !u!114 &4967586694480725576
+--- !u!114 &8273743259471857019
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
