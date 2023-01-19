@@ -231,7 +231,9 @@ namespace States
             player.SetInmortal(true);
             player.SetVelocity(Vector2.zero);
             stateMachine.canMove = false;
+            stateMachine.isCharging = false;
             stateMachine.canJump = false;
+            player.SetAnimationBool("IsCharging",stateMachine.isCharging);
             player.SetAnimationTrigger("Dead");
         }
 

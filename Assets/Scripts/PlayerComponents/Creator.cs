@@ -25,8 +25,8 @@ public class Creator : MonoBehaviour
        /* var player = Instantiate(playerToInstantiate, firstPlayerSpawn.position, Quaternion.identity);
         player.transform.SetParent(transform);
         var inputPlayer = player.GetComponentInChildren<PlayerInput>();*/
-        InitializePlayer(p1, Gamepad.all[1].device.deviceId);
-        InitializePlayer(p2, Gamepad.all[0].device.deviceId);
+        InitializePlayer(p1, Gamepad.all[0].device.deviceId);
+        InitializePlayer(p2, Gamepad.all[1].device.deviceId);
     }
 
     private void InitializePlayer(PlayerInput player, int device)
@@ -45,12 +45,14 @@ public class Creator : MonoBehaviour
             playerBehaviour.gameObject.transform.position = firstPlayerSpawn.position;
             playerBehaviour.SetMaterial(firstPlayerMaterial);
             playerBehaviour.SetSpawnPoint(firstPlayerSpawn.position);
+            playerBehaviour.SetPlayerName("Blue");
         }
         else
         {
             playerBehaviour.gameObject.transform.position = secondPlayerSpawn.position;
             playerBehaviour.SetMaterial(secondPlayerMaterial);
             playerBehaviour.SetSpawnPoint(secondPlayerSpawn.position);
+            playerBehaviour.SetPlayerName("Red");
         }
         
         _playerIndex++;

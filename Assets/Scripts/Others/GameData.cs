@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 namespace Others
@@ -16,6 +17,7 @@ namespace Others
                 public float moveMultiplier;
                 public float recoveryMultiplier;
                 public Vector3 punchScale;
+                public float gameTime = 300;
         }
 
         [Serializable]

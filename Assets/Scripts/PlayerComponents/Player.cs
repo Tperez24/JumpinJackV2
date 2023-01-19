@@ -7,6 +7,7 @@ using States;
 using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace PlayerComponents
 {
@@ -38,6 +39,10 @@ namespace PlayerComponents
         private GameData _data;
         private StateMachine _stateMachine;
         private Vector3 _initialScale;
+        private int _life;
+        private string _name;
+
+        public static UnityEvent<string,int> OnLifeLost = new UnityEvent<string,int>();
         private bool InThisState(StateType state) => _stateMachine.GetCurrentState() == state;
     
         public void ApplyForce()
@@ -49,8 +54,19 @@ namespace PlayerComponents
         public void StartCharging()
         {
             if(!_stateMachine.canPunch) return;
-            if(InThisState(StateType.OnAir) || InThisState(StateType.OnLaunchPunchAir) || InThisState(StateType.OnRecovery)) _stateMachine.ChangeState(StateType.OnChargingPunchAir);
-            if(InThisState(StateType.OnGround) || InThisState(StateType.OnLaunchPunchGround) || InThisState(StateType.OnRecovery)) _stateMachine.ChangeState(StateType.OnChargingPunchGround);
+            if (InThisState(StateType.OnAir) || InThisState(StateType.OnLaunchPunchAir) ||
+                InThisState(StateType.OnRecovery))
+            {
+                _stateMachine.ChangeState(StateType.OnChargingPunchAir);
+                chargeParticle.SetActive(true);
+            }
+
+            if (InThisState(StateType.OnGround) || InThisState(StateType.OnLaunchPunchGround) ||
+                InThisState(StateType.OnRecovery))
+            {
+                _stateMachine.ChangeState(StateType.OnChargingPunchGround);
+                chargeParticle.SetActive(true);
+            }
         }
 
         public void Move(Vector2 direction)
@@ -210,7 +226,6 @@ namespace PlayerComponents
             if(InThisState(StateType.OnGround) && playerRb.velocity.x != 0 && !runParticle.activeSelf) runParticle.SetActive(true);
             if(!InThisState(StateType.OnGround) && runParticle.activeSelf) runParticle.SetActive(false);
             if(InThisState(StateType.OnGround) && runParticle.activeSelf && playerRb.velocity.x == 0) runParticle.SetActive(false);
-            if(chargeParticle.activeSelf && _stateMachine.isCharging) chargeParticle.SetActive(true);
         }
 
         public void SetVelocity(Vector2 newVelocity) => playerRb.velocity = newVelocity;
@@ -271,9 +286,8 @@ namespace PlayerComponents
 
         public void ApplyPunchForce(float force, Vector3 direction)
         {
-            Debug.Log("Me golpiaste" + force + direction);
-            
             Instantiate(hitPunchParticle, transform.position + new Vector3(0,0.75f,0) , quaternion.identity);
+            chargeParticle.SetActive(false);
             
             if (direction.x < 0) FlipPlayer(new Vector3(1,1,-1), true);
             else FlipPlayer(new Vector3(1, 1, 1), false);
@@ -298,11 +312,24 @@ namespace PlayerComponents
         {
             if (other.gameObject.CompareTag(TagNames.DeathWall))
             {
+                OnLifeLost?.Invoke(_name,_life);
+                _life++;
+                _direction = Vector2.zero;
+                playerRb.velocity = _direction;
+                SetAnimatorFloat("XPosition",0);
+                chargeParticle.SetActive(false);
                 var ps = Instantiate(deathParticle, transform.position, quaternion.identity);
                 Destroy(ps,2);
                 _stateMachine.ChangeState(StateType.OnDeath);
-                StartCoroutine(StartCooldown(() => _stateMachine.ExitState(), 1.5f));
-                _direction = Vector2.zero;
+                StartCoroutine(StartCooldown(() =>
+                {
+                    if (_life == 3)
+                    {
+                        Destroy(gameObject);
+                        return;
+                    }
+                    _stateMachine.ExitState();
+                }, 1.5f));
             }
         }
 
@@ -320,7 +347,8 @@ namespace PlayerComponents
 
         public void ShowMesh()
         {
-            mRenderer.enabled = true;
+            if (_life == 3) return;
+                mRenderer.enabled = true;
             fist.gameObject.SetActive(true);
             //Corutina material
         }
@@ -329,6 +357,11 @@ namespace PlayerComponents
         {
             capsule.enabled = !b;
             foot.enabled = b;
+        }
+
+        public void SetPlayerName(string newName)
+        {
+            _name = newName;
         }
     }
 }
