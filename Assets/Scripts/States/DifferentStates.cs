@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using PlayerComponents;
+using UnityEngine;
 
 namespace States
 {
@@ -12,7 +13,7 @@ namespace States
             stateMachine.canMove = true;
             player.GetRigidBody().useGravity = true;
             
-            player.SetVelocity(new Vector2(player.GetRigidBody().velocity.x * player.GetData().recoveryMultiplyer,player.GetRigidBody().velocity.y * player.GetData().recoveryMultiplyer));
+            player.SetVelocity(new Vector2(player.GetRigidBody().velocity.x * player.GetData().recoveryMultiplier,player.GetRigidBody().velocity.y * player.GetData().recoveryMultiplier));
             //Movimiento normal
         }
 
@@ -30,15 +31,18 @@ namespace States
         { 
             RaycastHit hit;
 
-            if (Physics.Raycast(player.transform.position,Vector3.down,out hit,1f) && player.IsOnGround(hit.collider.gameObject))
+            if (Physics.Raycast(player.transform.position,Vector3.down,out hit,1f) && Player.IsOnGround(hit.collider.gameObject))
             {
                 stateMachine.canJump = true;
             }
 
+            player.SetAnimationTrigger("Recovery");
+            
             stateMachine.canMove = true;
+            player.EnableFistCollider(false);
             player.GetRigidBody().useGravity = true;
             
-            player.SetVelocity(new Vector2(player.GetRigidBody().velocity.x * player.GetData().recoveryMultiplyer,player.GetRigidBody().velocity.y * player.GetData().recoveryMultiplyer));
+            player.SetVelocity(new Vector2(player.GetRigidBody().velocity.x * player.GetData().recoveryMultiplier,player.GetRigidBody().velocity.y * player.GetData().recoveryMultiplier));
         }
     }
     
@@ -50,6 +54,9 @@ namespace States
         {
             //Movimiento leve
             if (!stateMachine.canJump) return;
+            
+            player.SetForceToFist(0);
+            
             stateMachine.canMove = true;
             player.GetRigidBody().useGravity = true;
             player.SetVelocity(new Vector2(player.GetRigidBody().velocity.x,0));
@@ -68,19 +75,20 @@ namespace States
 
         public override void DoAction()
         {
-            //Quitar movimiento
-            //Al lanzarlo quitar friccion durante x segundos
             if (!stateMachine.canPunch) return;
+            player.SetAnimationBool("IsCharging",true);
             stateMachine.canMove = false;
             player.SetVelocity(new Vector2(0,-1.5f));
             player.GetRigidBody().useGravity = false;
+
+            stateMachine.isCharging = true;
+            player.StartGrowingSprite();
         
             stateMachine.SetActualTime(Time.time);
         }
 
         public override void ExitState()
         {
-            //reiniciar
             stateMachine.ChangeState(StateType.OnLaunchPunchGround);
         }
     }
@@ -91,18 +99,27 @@ namespace States
 
         public override void DoAction()
         {
-            //Quitar movimiento
-            //Al lanzarlo quitar friccion durante x segundos
             if (!stateMachine.canPunch) return;
+            
+            player.SetAnimationBool("IsCharging",false);
+            player.SetAnimationTrigger("Launch");
+            
+            player.EnableFistCollider(true);
+            
+            var duration = Time.time - stateMachine.GetActualTime();
+            
+            player.SetForceToFist(player.GetForceOnTime(duration));
+            
             stateMachine.canMove = false;
             PreparePunch();
-            var duration = Time.time - stateMachine.GetActualTime();
             player.Punch(player.GetForceOnTime(duration),player.GetRecoveryTime(duration));
+            
+            stateMachine.isCharging = false;
+            player.ResizeSprite();
         }
 
         public override void ExitState()
         {
-            //reiniciar
         }
     }
     public class HitStunState : State
@@ -111,14 +128,19 @@ namespace States
 
         public override void DoAction()
         {
-            //desactivar gravedad x segundos
-            //Lanzar en direccion de golpe
-            //Jugador pierde control
+            player.GetRigidBody().useGravity = true;
+            stateMachine.canJump = false;
+            stateMachine.canMove = false;
+            stateMachine.canPunch = false;
+            player.EnableFistCollider(false);
+            
+            player.SetAnimationTrigger("Hit");
         }
 
         public override void ExitState()
         {
-            //Reiniciar inercias
+            stateMachine.canPunch = true;
+            stateMachine.ChangeState(StateType.OnRecovery);
         }
     }
     
@@ -128,20 +150,22 @@ namespace States
 
         public override void DoAction()
         {
-            //Quitar gravedad y aplicar fuerza hacia abajo lenta
-            //No nos podemos mover
             if (!stateMachine.canPunch) return;
+            
+            player.SetAnimationBool("IsCharging",true);
+            
             stateMachine.canMove = false;
             player.SetVelocity(new Vector2(0, -1.5f));
             player.GetRigidBody().useGravity = false;
+            
+            stateMachine.isCharging = true;
+            player.StartGrowingSprite();
 
             stateMachine.SetActualTime(Time.time);
         }
 
         public override void ExitState()
         {
-            //Añadir fuerza y reiniciar gravedad
-            //Cooldown
             stateMachine.ChangeState(StateType.OnLaunchPunchAir);
         }
     }
@@ -152,20 +176,27 @@ namespace States
 
         public override void DoAction()
         {
-            //Quitar gravedad y aplicar fuerza hacia abajo lenta
-            //No nos podemos mover
             if (!stateMachine.canPunch) return;
+            
+            player.SetAnimationBool("IsCharging",false);
+            player.SetAnimationTrigger("Launch");
+            
+            player.EnableFistCollider(true);
+            
+            var duration = Time.time - stateMachine.GetActualTime();
+            
+            player.SetForceToFist(player.GetForceOnTime(duration));
             
             stateMachine.canMove = false;
             PreparePunch();
-            var duration = Time.time - stateMachine.GetActualTime();
             player.Punch(player.GetForceOnTime(duration),player.GetRecoveryTime(duration));
+            
+            stateMachine.isCharging = false;
+            player.ResizeSprite();
         }
 
         public override void ExitState()
         {
-            //Añadir fuerza y reiniciar gravedad
-            //Cooldown
         }
     }
     
