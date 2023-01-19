@@ -6,7 +6,7 @@ namespace PlayerComponents
     {
         public class Fist : MonoBehaviour
         {
-            public GameObject parent;
+            public Player player;
             private float _force;
 
             public void SetForce(float force) => _force = force;
@@ -15,8 +15,8 @@ namespace PlayerComponents
             {
                 if (collision.gameObject.CompareTag(TagNames.Player))
                 {
-                    if (parent == collision.gameObject) return;
-                    collision.gameObject.SendMessageUpwards("ApplyPunchForce",(_force,(collision.gameObject.transform.position - transform.position).normalized));
+                    if (player.gameObject == collision.gameObject) return;
+                    collision.gameObject.GetComponent<Player>().ApplyPunchForce(_force,player.GetLastPunchDirection());
                 }
             }
         }

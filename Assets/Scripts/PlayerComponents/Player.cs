@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
     public TextMeshProUGUI txtMeshPro;
     public Fist fist;
     
-    private Vector2 _direction;
+    private Vector2 _direction,_lastPunchDirection;
     private GameData _data;
     private StateMachine _stateMachine;
     private Vector3 _initialScale;
@@ -214,9 +214,11 @@ public class Player : MonoBehaviour
         punchSprite.color = color;
     }
 
-    public void ApplyPunchForce((float force,Vector3 direction) obj)
+    public void ApplyPunchForce(float force,Vector3 direction)
     {
-        Debug.Log("Me golpiaste" + obj.force);
-        playerRb.AddForce(obj.direction * obj.force);
+        Debug.Log("Me golpiaste" + force);
+        playerRb.AddForce(direction * force);
     }
+
+    public Vector2 GetLastPunchDirection() => _lastPunchDirection;
 }
