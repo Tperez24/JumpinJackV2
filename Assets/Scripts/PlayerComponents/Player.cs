@@ -46,6 +46,11 @@ namespace PlayerComponents
         private readonly int _intensity = Shader.PropertyToID("_Intensity");
         private readonly int _dissolve = Shader.PropertyToID("_Dissolve");
 
+        public AudioSource audioSource;
+        public AudioClip dieAudio,
+            hitAudio,
+            gethitAudio;
+
         public static UnityEvent<string,int> OnLifeLost = new UnityEvent<string,int>();
         private bool InThisState(StateType state) => _stateMachine.GetCurrentState() == state;
         public void ApplyForce()
@@ -394,5 +399,7 @@ namespace PlayerComponents
             }
             _materialPropertyBlock.SetFloat(property, lerp.y);
         }
+        
+        public void PlayOneShot(AudioClip audioClip) => audioSource.PlayOneShot(audioClip);
     }
 }
