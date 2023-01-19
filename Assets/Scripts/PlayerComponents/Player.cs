@@ -41,10 +41,13 @@ namespace PlayerComponents
         private Vector3 _initialScale;
         private int _life;
         private string _name;
+        private Material _ownMat;
+        private MaterialPropertyBlock _materialPropertyBlock;
+        private readonly int _intensity = Shader.PropertyToID("_Intensity");
+        private readonly int _dissolve = Shader.PropertyToID("_Dissolve");
 
         public static UnityEvent<string,int> OnLifeLost = new UnityEvent<string,int>();
         private bool InThisState(StateType state) => _stateMachine.GetCurrentState() == state;
-    
         public void ApplyForce()
         {
             if (InThisState(StateType.OnChargingPunchAir) || InThisState(StateType.OnChargingPunchGround))
@@ -202,8 +205,13 @@ namespace PlayerComponents
             Gizmos.DrawRay(position,dir);
         }
 
-        public void SetMaterial(Material mat) => mRenderer.material = mat;
-    
+        public void SetMaterial(Material mat)
+        {
+            mRenderer.material = mat;
+            _ownMat = mat;
+            _materialPropertyBlock = new MaterialPropertyBlock();
+        }
+
         private void FixedUpdate()
         {
             txtMeshPro.text = _stateMachine.GetCurrentState().ToString();
@@ -286,6 +294,9 @@ namespace PlayerComponents
 
         public void ApplyPunchForce(float force, Vector3 direction)
         {
+            StartCoroutine(ChangePropertyMaterial(0.25f, 0,0.75f, _intensity));
+            StartCoroutine(StartCooldown(() => StartCoroutine(ChangePropertyMaterial(0.25f, 0.75f,0, _intensity)),0.1f));
+            
             Instantiate(hitPunchParticle, transform.position + new Vector3(0,0.75f,0) , quaternion.identity);
             chargeParticle.SetActive(false);
             
@@ -350,6 +361,7 @@ namespace PlayerComponents
             if (_life == 3) return;
                 mRenderer.enabled = true;
             fist.gameObject.SetActive(true);
+            StartCoroutine(ChangePropertyMaterial(1.5f, 1,0, _dissolve));
             //Corutina material
         }
 
@@ -362,6 +374,25 @@ namespace PlayerComponents
         public void SetPlayerName(string newName)
         {
             _name = newName;
+        }
+
+        public IEnumerator ChangePropertyMaterial(float time,float min, float max,int property)
+        {
+
+            var t = 0f;
+            var lerp = new Vector2(min, max);
+
+            while (t < 1)
+            {
+                t += Time.deltaTime / time;
+
+                var constructionAmount = Mathf.Lerp(lerp.x, lerp.y, t);
+                _materialPropertyBlock.SetFloat(property, constructionAmount);
+                mRenderer.SetPropertyBlock(_materialPropertyBlock, 0);
+                
+                yield return null;
+            }
+            _materialPropertyBlock.SetFloat(property, lerp.y);
         }
     }
 }

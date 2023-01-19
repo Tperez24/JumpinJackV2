@@ -73,7 +73,7 @@ public class CanvasManager : MonoBehaviour
 
     private IEnumerator EndGame()
     {
-        yield return new WaitForSecondsRealtime(2);
+        yield return new WaitForSecondsRealtime(5);
         Time.timeScale = 1f;
         
     }
