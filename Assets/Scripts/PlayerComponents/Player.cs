@@ -16,7 +16,7 @@ namespace PlayerComponents
         private Vector3 _spawnPoint;
 
         public Transform lookAtPoint;
-        
+
         public GameObject pointer;
         public int playerIndex;
         public SkinnedMeshRenderer mRenderer;
@@ -25,6 +25,13 @@ namespace PlayerComponents
         public Fist fist;
         public Animator animator;
         public Collider capsule, foot;
+
+        public GameObject chargeParticle,
+            deathParticle,
+            hitPunchParticle,
+            hitPunchGround,
+            runParticle,
+            loseLifeParticle;
 
         private Vector2 _direction,_lastPunchDirection;
         private GameData _data;
@@ -115,6 +122,7 @@ namespace PlayerComponents
             {
                 if (IsInAngle(Vector3.Dot(-transform.up, normalizedDir)))
                 {
+                    //Instanciar particula hit ground en hit.pos
                     SetVelocity(Vector3.zero);
                     AddForce(-normalizedDir * _data.bounceForce,ForceMode.Impulse,EndCooldownLaunch);
                     StartRecovery(recoveryDuration);
@@ -195,6 +203,9 @@ namespace PlayerComponents
                 return;
 
             MovePlayer(_direction);
+            
+            //Si estoy en ground, esta desactivado la runParticle y velocity no es 0
+            //esta desactivado la chargeParticle y estoy cargando
         }
 
         public void SetVelocity(Vector2 newVelocity) => playerRb.velocity = newVelocity;
@@ -257,6 +268,8 @@ namespace PlayerComponents
         {
             Debug.Log("Me golpiaste" + force + direction);
             
+            //instanciar hit punch particle
+            
             if (direction.x < 0) FlipPlayer(new Vector3(1,1,-1), true);
             else FlipPlayer(new Vector3(1, 1, 1), false);
             
@@ -280,6 +293,7 @@ namespace PlayerComponents
         {
             if (other.gameObject.CompareTag(TagNames.DeathWall))
             {
+                //instanciar death part en transform.position
                 _stateMachine.ChangeState(StateType.OnDeath);
                 StartCoroutine(StartCooldown(() => _stateMachine.ExitState(), 1.5f));
                 _direction = Vector2.zero;

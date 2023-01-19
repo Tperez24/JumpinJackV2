@@ -1683,6 +1683,18 @@ MonoBehaviour:
   animator: {fileID: 3042764896605931704}
   capsule: {fileID: 4605738780764951515}
   foot: {fileID: 5370495264046020353}
+  chargeParticle: {fileID: 5824670795371433373, guid: 0ac503191e41a7d44b7930cdd460ceaf,
+    type: 3}
+  deathParticle: {fileID: 1652143759095011289, guid: 7eed6981b95817d449fa955101dad030,
+    type: 3}
+  hitPunchParticle: {fileID: 2773132542499061391, guid: d892731f265cb3741801b7344b33edd2,
+    type: 3}
+  hitPunchGround: {fileID: 1631195384728341204, guid: 30394b3a56a84b94aa70da7e5fa23477,
+    type: 3}
+  runParticle: {fileID: 8656522925564163052, guid: 3127f2cda43964845949bb2da2a58701,
+    type: 3}
+  loseLifeParticle: {fileID: 6855314210357232287, guid: 6de9f3e874f817f4f93b3fc93537c7cf,
+    type: 3}
 --- !u!136 &4605738780764951515
 CapsuleCollider:
   m_ObjectHideFlags: 0
