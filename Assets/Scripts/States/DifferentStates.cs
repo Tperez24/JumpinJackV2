@@ -35,16 +35,18 @@ namespace States
         public override void DoAction()
         { 
             RaycastHit hit;
-
+            player.SetAnimationBool("OnGround",false);
             if (Physics.Raycast(player.transform.position,Vector3.down,out hit,1f) && Player.IsOnGround(hit.collider.gameObject))
             {
                 stateMachine.canJump = true;
+                player.SetAnimationBool("OnGround",true);
             }
             
             player.RotatePlayer();
             
             player.SetAnimationBool("Recovery",true);
             player.SetAnimationBool("Launch",false);
+            
             
             player.EnableFistCollider(false);
             MoveAndGravity(true);

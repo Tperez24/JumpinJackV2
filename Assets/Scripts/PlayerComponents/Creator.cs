@@ -5,33 +5,40 @@ using UnityEngine.InputSystem;
 
 public class Creator : MonoBehaviour
 {
-    public PlayerInputManager playerInputManager;
+    
     public GameData data;
     public Transform firstPlayerSpawn, secondPlayerSpawn;
     public Material firstPlayerMaterial, secondPlayerMaterial;
+    public GameObject playerToInstantiate;
     
     private PlayerController _controller;
     private int _playerIndex;
 
 
-    private void Start()
+    public void Initialize()
     {
         _controller = new PlayerController();
         _controller.Enable();
-
-        playerInputManager.onPlayerJoined += InitializePlayer;
+        
+        var p1 = PlayerInput.Instantiate(playerToInstantiate, controlScheme: "Gamepad", pairWithDevice: Gamepad.all[0]);
+        var p2 = PlayerInput.Instantiate(playerToInstantiate, controlScheme: "Gamepad",  pairWithDevice: Gamepad.all[1]);
+       /* var player = Instantiate(playerToInstantiate, firstPlayerSpawn.position, Quaternion.identity);
+        player.transform.SetParent(transform);
+        var inputPlayer = player.GetComponentInChildren<PlayerInput>();*/
+        InitializePlayer(p1, Gamepad.all[1].device.deviceId);
+        InitializePlayer(p2, Gamepad.all[0].device.deviceId);
     }
 
-    private void InitializePlayer(PlayerInput player)
+    private void InitializePlayer(PlayerInput player, int device)
     {
         var playerBehaviour = player.gameObject.GetComponentInParent<Player>();
         var inputHandler = player.gameObject.GetComponent<PlayerInputHandler>();
 
-        playerBehaviour.playerIndex = player.devices[0].deviceId;
+        playerBehaviour.playerIndex = device;
         playerBehaviour.SetData(data);
-        
+
         inputHandler.SetController(_controller);
-        inputHandler.Initialize();
+        inputHandler.Initialize(_playerIndex);
 
         if (_playerIndex == 0)
         {

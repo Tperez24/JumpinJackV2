@@ -71,6 +71,15 @@ public partial class @PlayerController : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Cruz"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""83c98e02-68d0-49bc-8e7f-34138dfd6061"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -128,6 +137,17 @@ public partial class @PlayerController : IInputActionCollection2, IDisposable
                     ""action"": ""Jump1"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8307cb82-464d-4fea-8c73-85ee26c95d06"",
+                    ""path"": ""<Gamepad>/dpad"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Cruz"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -141,6 +161,7 @@ public partial class @PlayerController : IInputActionCollection2, IDisposable
         m_Gamepad_Jump = m_Gamepad.FindAction("Jump", throwIfNotFound: true);
         m_Gamepad_Jump1 = m_Gamepad.FindAction("Jump1", throwIfNotFound: true);
         m_Gamepad_FireButton1 = m_Gamepad.FindAction("FireButton1", throwIfNotFound: true);
+        m_Gamepad_Cruz = m_Gamepad.FindAction("Cruz", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -205,6 +226,7 @@ public partial class @PlayerController : IInputActionCollection2, IDisposable
     private readonly InputAction m_Gamepad_Jump;
     private readonly InputAction m_Gamepad_Jump1;
     private readonly InputAction m_Gamepad_FireButton1;
+    private readonly InputAction m_Gamepad_Cruz;
     public struct GamepadActions
     {
         private @PlayerController m_Wrapper;
@@ -214,6 +236,7 @@ public partial class @PlayerController : IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Gamepad_Jump;
         public InputAction @Jump1 => m_Wrapper.m_Gamepad_Jump1;
         public InputAction @FireButton1 => m_Wrapper.m_Gamepad_FireButton1;
+        public InputAction @Cruz => m_Wrapper.m_Gamepad_Cruz;
         public InputActionMap Get() { return m_Wrapper.m_Gamepad; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -238,6 +261,9 @@ public partial class @PlayerController : IInputActionCollection2, IDisposable
                 @FireButton1.started -= m_Wrapper.m_GamepadActionsCallbackInterface.OnFireButton1;
                 @FireButton1.performed -= m_Wrapper.m_GamepadActionsCallbackInterface.OnFireButton1;
                 @FireButton1.canceled -= m_Wrapper.m_GamepadActionsCallbackInterface.OnFireButton1;
+                @Cruz.started -= m_Wrapper.m_GamepadActionsCallbackInterface.OnCruz;
+                @Cruz.performed -= m_Wrapper.m_GamepadActionsCallbackInterface.OnCruz;
+                @Cruz.canceled -= m_Wrapper.m_GamepadActionsCallbackInterface.OnCruz;
             }
             m_Wrapper.m_GamepadActionsCallbackInterface = instance;
             if (instance != null)
@@ -257,6 +283,9 @@ public partial class @PlayerController : IInputActionCollection2, IDisposable
                 @FireButton1.started += instance.OnFireButton1;
                 @FireButton1.performed += instance.OnFireButton1;
                 @FireButton1.canceled += instance.OnFireButton1;
+                @Cruz.started += instance.OnCruz;
+                @Cruz.performed += instance.OnCruz;
+                @Cruz.canceled += instance.OnCruz;
             }
         }
     }
@@ -268,5 +297,6 @@ public partial class @PlayerController : IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnJump1(InputAction.CallbackContext context);
         void OnFireButton1(InputAction.CallbackContext context);
+        void OnCruz(InputAction.CallbackContext context);
     }
 }

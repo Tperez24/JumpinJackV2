@@ -109,13 +109,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1762935271142aa45857b65d9c7341a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerInputManager: {fileID: 2497123787240919919}
   data: {fileID: 11400000, guid: f8bd3061adbb5384192298fb9d21fd6f, type: 2}
   firstPlayerSpawn: {fileID: 57716643}
   secondPlayerSpawn: {fileID: 1274274547}
   firstPlayerMaterial: {fileID: 2100000, guid: 874cf0c8dc64d024faab7db54871c676, type: 2}
   secondPlayerMaterial: {fileID: 2100000, guid: 9fe61c36a84c0804fab041dad8d15e12,
     type: 2}
+  playerToInstantiate: {fileID: 5989767860982820072, guid: f93b781b5b14b5d4297866c010c0291d,
+    type: 3}
 --- !u!1 &2497123787240919904
 GameObject:
   m_ObjectHideFlags: 0
@@ -125,7 +126,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2497123787240919918}
-  - component: {fileID: 2497123787240919919}
   m_Layer: 0
   m_Name: PlayerInputManager
   m_TagString: Untagged
@@ -148,48 +148,3 @@ Transform:
   m_Father: {fileID: 5356523690920347155}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2497123787240919919
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2497123787240919904}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 621567455fd1c4ceb811cc8a00b6a1a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_NotificationBehavior: 3
-  m_MaxPlayerCount: -1
-  m_AllowJoining: 1
-  m_JoinBehavior: 0
-  m_PlayerJoinedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_PlayerLeftEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_JoinAction:
-    m_UseReference: 0
-    m_Action:
-      m_Name: Join
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: 148cce63-f859-4383-93d4-91025f9143ca
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-      m_Flags: 0
-    m_Reference: {fileID: 0}
-  m_PlayerPrefab: {fileID: 8280239127152182266, guid: 31bc2d6f2f32aca4ab8f204db9e49db0,
-    type: 3}
-  m_SplitScreen: 0
-  m_MaintainAspectRatioInSplitScreen: 0
-  m_FixedNumberOfSplitScreens: -1
-  m_SplitScreenRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1

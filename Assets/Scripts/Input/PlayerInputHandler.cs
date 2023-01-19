@@ -10,14 +10,14 @@ public class PlayerInputHandler : MonoBehaviour
     private Player _player;
     private InputAction _movePointer,_fireButton,_jumpButton;
 
-    public void Initialize()
+    public void Initialize(int playerIndex)
     {
         _playerInput = GetComponent<PlayerInput>();
         _player = GetComponentInParent<Player>();
 
         _movePointer = _controller.Gamepad.Joystick;
-        _jumpButton = Adapter.GetAction(_playerInput.playerIndex, _controller, Adapter.ActionType.Jump);
-        _fireButton = Adapter.GetAction(_playerInput.playerIndex, _controller, Adapter.ActionType.Fire);
+        _jumpButton = Adapter.GetAction(playerIndex, _controller, Adapter.ActionType.Jump);
+        _fireButton = Adapter.GetAction(playerIndex, _controller, Adapter.ActionType.Fire);
 
         _movePointer.performed += OnMovePointer;
         _fireButton.started += StartFire;
