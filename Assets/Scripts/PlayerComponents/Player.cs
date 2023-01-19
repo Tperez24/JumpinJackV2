@@ -57,8 +57,8 @@ namespace PlayerComponents
         {
             SetAnimatorFloat("XPosition",playerRb.velocity.x);
 
-            if (direction.x < 0) RotatePlayer(new Vector3(1,1,-1), true);
-            else RotatePlayer(new Vector3(1, 1, 1), false);
+            /*if (direction.x < 0) RotatePlayer(new Vector3(1,1,-1), true);
+            else RotatePlayer(new Vector3(1, 1, 1), false);*/
 
             playerRb.velocity = new Vector3 (-direction.x * _data.moveMultiplier, playerRb.velocity.y, direction.y * _data.moveMultiplier);
         }
@@ -99,6 +99,12 @@ namespace PlayerComponents
             var ownPos = GetOwnPos();
             var dir = GetDir(pointerPos, ownPos);
             var distance = Vector2.Distance(pointerPos, ownPos);
+
+            /*if (dir.x > 0) RotatePlayer(new Vector3(1,1,-1), true);
+            else RotatePlayer(new Vector3(1, 1, 1), false);*/
+            
+            _lastPunchDirection = dir;
+            
             RaycastHit hit;
         
             if (Physics.Raycast(transform.position, dir, out hit,distance) && IsOnGround(hit.collider.gameObject))
@@ -113,6 +119,7 @@ namespace PlayerComponents
             }
         
             AddForce(dir  *  force,ForceMode.Impulse,EndCooldownLaunch);
+            StartCoroutine(StartCooldown(() => SetAnimationBool("Launch", false),recoveryDuration));
             StartRecovery(recoveryDuration);
         }
 
@@ -152,7 +159,7 @@ namespace PlayerComponents
         private void OnCollisionEnter(Collision collision)
         {
             //TODO on ground aqui
-            if (IsOnGround(collision.gameObject) && !InThisState(StateType.OnChargingPunchAir) && !InThisState(StateType.OnHitStun)) _stateMachine.ChangeState(StateType.OnGround);
+            if (IsOnGround(collision.gameObject) && !InThisState(StateType.OnChargingPunchAir) && !InThisState(StateType.OnHitStun) && (!InThisState(StateType.OnGround))) _stateMachine.ChangeState(StateType.OnGround);
             if (collision.gameObject.CompareTag(TagNames.Player)) playerRb.useGravity = true;
         }
 
@@ -167,10 +174,20 @@ namespace PlayerComponents
 
         public void SetMaterial(Material mat) => mRenderer.material = mat;
     
-        private void Update()
+        private void FixedUpdate()
         {
             txtMeshPro.text = _stateMachine.GetCurrentState().ToString();
 
+            if (!InThisState(StateType.OnHitStun))
+            {
+                if(playerRb.velocity.x < 0) RotatePlayer(new Vector3(1,1,1),false);
+                else if(playerRb.velocity.x > 0)
+                {
+                    RotatePlayer(new Vector3(1,1,-1),true);
+                }
+            }
+            
+            
             if (!_stateMachine.canMove)
                 return;
 
@@ -192,7 +209,10 @@ namespace PlayerComponents
             onCooldownEnd?.Invoke();
         }
 
-        private void EndCooldownLaunch() => _stateMachine.canPunch = true;
+        private void EndCooldownLaunch()
+        {
+            _stateMachine.canPunch = true;
+        }
 
         public float GetForceOnTime(float duration)
         {
@@ -227,8 +247,11 @@ namespace PlayerComponents
         {
             Debug.Log("Me golpiaste" + force + direction);
             
+            if (direction.x < 0) RotatePlayer(new Vector3(1,1,-1), true);
+            else RotatePlayer(new Vector3(1, 1, 1), false);
+            
             _stateMachine.ChangeState(StateType.OnHitStun);
-            StartCoroutine(StartCooldown(() => _stateMachine.ExitState(),2f));
+            StartCoroutine(StartCooldown(() => _stateMachine.ExitState(),1f));
         }
         
         public Vector2 GetLastPunchDirection() => _lastPunchDirection;

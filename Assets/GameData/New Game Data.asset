@@ -16,22 +16,22 @@ MonoBehaviour:
   - time: 0.1
     recoveryTime: 0
     forces: 0
-  - time: 0.25
+  - time: 0.125
     recoveryTime: 0.1
     forces: 5
-  - time: 0.5
+  - time: 0.25
     recoveryTime: 0.2
     forces: 10
-  - time: 0.75
+  - time: 0.5
     recoveryTime: 0.3
     forces: 15
-  - time: 1
+  - time: 0.75
     recoveryTime: 0.3
     forces: 20
   dotAngle: 0.707
   jumpForce: 7
   punchCooldown: 1.5
-  bounceForce: 10
+  bounceForce: 20
   moveMultiplier: 3
   recoveryMultiplier: 0
   punchScale: {x: 3, y: 3, z: 0}

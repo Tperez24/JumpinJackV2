@@ -11,6 +11,9 @@ namespace States
         {
             stateMachine.canJump = true;
             MoveAndGravity(true);
+            
+            player.SetAnimationBool("OnGround",true);
+            player.SetAnimationBool("Recovery",false);
 
             var velocity = player.GetVelocity();
             var multiplier = player.GetData().recoveryMultiplier;
@@ -36,7 +39,8 @@ namespace States
                 stateMachine.canJump = true;
             }
             
-            player.SetAnimationTrigger("Recovery");
+            player.SetAnimationBool("Recovery",true);
+            player.SetAnimationBool("Launch",false);
             
             player.EnableFistCollider(false);
             MoveAndGravity(true);
@@ -55,6 +59,10 @@ namespace States
         {
             //Movimiento leve
             if (!stateMachine.canJump) return;
+            
+            player.SetAnimationBool("OnGround",false);
+            player.SetAnimationBool("Recovery",false);
+            player.SetAnimationTrigger("OnAir");
             
             player.SetForceToFist(0);
             
@@ -101,7 +109,7 @@ namespace States
             if (!stateMachine.canPunch) return;
             
             player.SetAnimationBool("IsCharging",false);
-            player.SetAnimationTrigger("Launch");
+            player.SetAnimationBool("Launch",true);
             
             player.EnableFistCollider(true);
             
@@ -127,6 +135,8 @@ namespace States
 
         public override void DoAction()
         {
+            player.ResizeSprite();
+            
             player.GetRigidBody().useGravity = true;
             stateMachine.canJump = false;
             stateMachine.canMove = false;
@@ -134,6 +144,7 @@ namespace States
             player.EnableFistCollider(false);
             
             player.SetAnimationTrigger("Hit");
+            player.SetAnimationBool("IsCharging",false);
         }
 
         public override void ExitState()
@@ -177,7 +188,7 @@ namespace States
             if (!stateMachine.canPunch) return;
             
             player.SetAnimationBool("IsCharging",false);
-            player.SetAnimationTrigger("Launch");
+            player.SetAnimationBool("Launch",true);
             
             player.EnableFistCollider(true);
             
