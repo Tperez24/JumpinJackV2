@@ -35,6 +35,12 @@ namespace PlayerComponents
             runParticle,
             loseLifeParticle;
 
+        public AudioClip dieAudio,
+            hitAudio,
+            gethitAudio;
+
+        public AudioSource audioSource;
+
         private Vector2 _direction,_lastPunchDirection;
         private GameData _data;
         private StateMachine _stateMachine;
@@ -363,5 +369,7 @@ namespace PlayerComponents
         {
             _name = newName;
         }
+
+        public void PlayOneShot(AudioClip audioClip) => audioSource.PlayOneShot(audioClip);
     }
 }
