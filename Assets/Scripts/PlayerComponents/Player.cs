@@ -5,6 +5,7 @@ using DefaultNamespace;
 using Others;
 using States;
 using TMPro;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace PlayerComponents
@@ -104,6 +105,8 @@ namespace PlayerComponents
 
         public void Punch(float force,float recoveryDuration)
         {
+            chargeParticle.SetActive(false);
+            
             var pointerPos = GetPointerPos();
             var ownPos = GetOwnPos();
             var normalizedDir = GetDir(pointerPos, ownPos);
@@ -122,7 +125,7 @@ namespace PlayerComponents
             {
                 if (IsInAngle(Vector3.Dot(-transform.up, normalizedDir)))
                 {
-                    //Instanciar particula hit ground en hit.pos
+                    Instantiate(hitPunchGround, hit.point,quaternion.identity);
                     SetVelocity(Vector3.zero);
                     AddForce(-normalizedDir * _data.bounceForce,ForceMode.Impulse,EndCooldownLaunch);
                     StartRecovery(recoveryDuration);
@@ -204,8 +207,10 @@ namespace PlayerComponents
 
             MovePlayer(_direction);
             
-            //Si estoy en ground, esta desactivado la runParticle y velocity no es 0
-            //esta desactivado la chargeParticle y estoy cargando
+            if(InThisState(StateType.OnGround) && playerRb.velocity.x != 0 && !runParticle.activeSelf) runParticle.SetActive(true);
+            if(!InThisState(StateType.OnGround) && runParticle.activeSelf) runParticle.SetActive(false);
+            if(InThisState(StateType.OnGround) && runParticle.activeSelf && playerRb.velocity.x == 0) runParticle.SetActive(false);
+            if(chargeParticle.activeSelf && _stateMachine.isCharging) chargeParticle.SetActive(true);
         }
 
         public void SetVelocity(Vector2 newVelocity) => playerRb.velocity = newVelocity;
@@ -268,7 +273,7 @@ namespace PlayerComponents
         {
             Debug.Log("Me golpiaste" + force + direction);
             
-            //instanciar hit punch particle
+            Instantiate(hitPunchParticle, transform.position + new Vector3(0,0.75f,0) , quaternion.identity);
             
             if (direction.x < 0) FlipPlayer(new Vector3(1,1,-1), true);
             else FlipPlayer(new Vector3(1, 1, 1), false);
@@ -293,7 +298,8 @@ namespace PlayerComponents
         {
             if (other.gameObject.CompareTag(TagNames.DeathWall))
             {
-                //instanciar death part en transform.position
+                var ps = Instantiate(deathParticle, transform.position, quaternion.identity);
+                Destroy(ps,2);
                 _stateMachine.ChangeState(StateType.OnDeath);
                 StartCoroutine(StartCooldown(() => _stateMachine.ExitState(), 1.5f));
                 _direction = Vector2.zero;
