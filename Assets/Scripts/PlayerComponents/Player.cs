@@ -143,10 +143,11 @@ namespace PlayerComponents
             
             } while (i < _data.forces.Last().time && _stateMachine.isCharging);
         }
-        public bool IsInAngle(float angle) => (angle > _data.dotAngle);
-        public Vector3 GetOwnPos() => transform.position + new Vector3(0, 0.75f, 0);
-        public Vector3 GetPointerPos() => pointer.transform.position;
-        public static Vector3 GetDir(Vector3 pointerPos, Vector3 ownPos) => (pointerPos - ownPos).normalized;
+
+        private bool IsInAngle(float angle) => (angle > _data.dotAngle);
+        private Vector3 GetOwnPos() => transform.position + new Vector3(0, 0.75f, 0);
+        private Vector3 GetPointerPos() => pointer.transform.position;
+        private static Vector3 GetDir(Vector3 pointerPos, Vector3 ownPos) => (pointerPos - ownPos).normalized;
 
         private void OnCollisionEnter(Collision collision)
         {
@@ -177,6 +178,7 @@ namespace PlayerComponents
         }
 
         public void SetVelocity(Vector2 newVelocity) => playerRb.velocity = newVelocity;
+        public Vector3 GetVelocity() => playerRb.velocity;
     
         public void AddForce(Vector2 dir,ForceMode mode,Action action)
         {
@@ -184,16 +186,13 @@ namespace PlayerComponents
             StartCoroutine(StartCooldown(action,_data.punchCooldown));
         }
 
-        public static IEnumerator StartCooldown(Action onCooldownEnd,float time)
+        private static IEnumerator StartCooldown(Action onCooldownEnd,float time)
         {
             yield return new WaitForSecondsRealtime(time);
             onCooldownEnd?.Invoke();
         }
 
-        private void EndCooldownLaunch()
-        {
-            _stateMachine.canPunch = true;
-        }
+        private void EndCooldownLaunch() => _stateMachine.canPunch = true;
 
         public float GetForceOnTime(float duration)
         {
@@ -224,14 +223,14 @@ namespace PlayerComponents
             punchSprite.color = color;
         }
 
-        public void ApplyPunchForce(float force,Vector3 direction)
+        public void ApplyPunchForce(float force, Vector3 direction)
         {
-            Debug.Log("Me golpiaste" + force);
-            //playerRb.AddForce(direction * force);
+            Debug.Log("Me golpiaste" + force + direction);
+            
             _stateMachine.ChangeState(StateType.OnHitStun);
             StartCoroutine(StartCooldown(() => _stateMachine.ExitState(),2f));
         }
-
+        
         public Vector2 GetLastPunchDirection() => _lastPunchDirection;
 
         public void EnableFistCollider(bool enable) => fist.GetCollider().enabled = enable;
@@ -239,6 +238,6 @@ namespace PlayerComponents
         public void SetAnimationTrigger(string trigger) => animator.SetTrigger(trigger);
         public void SetAnimationBool(string trigger,bool b) => animator.SetBool(trigger,b);
 
-        public void SetAnimatorFloat(string trigger, float value) => animator.SetFloat(trigger, value);
+        private void SetAnimatorFloat(string trigger, float value) => animator.SetFloat(trigger, value);
     }
 }

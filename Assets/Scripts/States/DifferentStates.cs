@@ -10,11 +10,11 @@ namespace States
         public override void DoAction()
         {
             stateMachine.canJump = true;
-            stateMachine.canMove = true;
-            player.GetRigidBody().useGravity = true;
-            
-            player.SetVelocity(new Vector2(player.GetRigidBody().velocity.x * player.GetData().recoveryMultiplier,player.GetRigidBody().velocity.y * player.GetData().recoveryMultiplier));
-            //Movimiento normal
+            MoveAndGravity(true);
+
+            var velocity = player.GetVelocity();
+            var multiplier = player.GetData().recoveryMultiplier;
+            player.SetVelocity(new Vector2(velocity.x * multiplier,velocity.y * multiplier));
         }
 
         public override void ExitState()
@@ -35,14 +35,15 @@ namespace States
             {
                 stateMachine.canJump = true;
             }
-
+            
             player.SetAnimationTrigger("Recovery");
             
-            stateMachine.canMove = true;
             player.EnableFistCollider(false);
-            player.GetRigidBody().useGravity = true;
+            MoveAndGravity(true);
             
-            player.SetVelocity(new Vector2(player.GetRigidBody().velocity.x * player.GetData().recoveryMultiplier,player.GetRigidBody().velocity.y * player.GetData().recoveryMultiplier));
+            var velocity = player.GetVelocity();
+            var multiplier = player.GetData().recoveryMultiplier;
+            player.SetVelocity(new Vector2(velocity.x * multiplier,velocity.y * multiplier));
         }
     }
     
@@ -57,9 +58,8 @@ namespace States
             
             player.SetForceToFist(0);
             
-            stateMachine.canMove = true;
-            player.GetRigidBody().useGravity = true;
-            player.SetVelocity(new Vector2(player.GetRigidBody().velocity.x,0));
+            MoveAndGravity(true);
+            player.SetVelocity(new Vector2(player.GetVelocity().x,0));
             player.AddForce(Vector3.up * player.GetData().jumpForce, ForceMode.Impulse, () => { });
             stateMachine.canJump = !stateMachine.canJump;
         }
@@ -77,9 +77,8 @@ namespace States
         {
             if (!stateMachine.canPunch) return;
             player.SetAnimationBool("IsCharging",true);
-            stateMachine.canMove = false;
             player.SetVelocity(new Vector2(0,-1.5f));
-            player.GetRigidBody().useGravity = false;
+            MoveAndGravity(false);
 
             stateMachine.isCharging = true;
             player.StartGrowingSprite();
@@ -112,7 +111,7 @@ namespace States
             
             stateMachine.canMove = false;
             PreparePunch();
-            player.Punch(player.GetForceOnTime(duration),player.GetRecoveryTime(duration));
+            player.Punch(player.GetForceOnTime(duration), player.GetRecoveryTime(duration));
             
             stateMachine.isCharging = false;
             player.ResizeSprite();
@@ -154,9 +153,8 @@ namespace States
             
             player.SetAnimationBool("IsCharging",true);
             
-            stateMachine.canMove = false;
             player.SetVelocity(new Vector2(0, -1.5f));
-            player.GetRigidBody().useGravity = false;
+            MoveAndGravity(false);
             
             stateMachine.isCharging = true;
             player.StartGrowingSprite();

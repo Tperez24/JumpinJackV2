@@ -27,6 +27,12 @@ namespace States
                         stateMachine.canPunch = false;
                 }
 
+                protected void MoveAndGravity(bool enable)
+                {
+                        stateMachine.canMove = enable;
+                        player.GetRigidBody().useGravity = enable;
+                }
+
                 public virtual void DoAction() {}
                 public virtual void ExitState() {}
         }
