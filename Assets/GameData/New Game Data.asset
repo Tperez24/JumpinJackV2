@@ -32,6 +32,6 @@ MonoBehaviour:
   jumpForce: 7
   punchCooldown: 1.5
   bounceForce: 10
-  moveMultiplier: 0.1
+  moveMultiplier: 3
   recoveryMultiplier: 0
   punchScale: {x: 3, y: 3, z: 0}

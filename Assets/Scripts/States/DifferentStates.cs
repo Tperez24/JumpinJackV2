@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using PlayerComponents;
+using UnityEngine;
 
 namespace States
 {
@@ -35,7 +36,10 @@ namespace States
                 stateMachine.canJump = true;
             }
 
+            player.SetAnimationTrigger("Recovery");
+            
             stateMachine.canMove = true;
+            player.EnableFistCollider(false);
             player.GetRigidBody().useGravity = true;
             
             player.SetVelocity(new Vector2(player.GetRigidBody().velocity.x * player.GetData().recoveryMultiplier,player.GetRigidBody().velocity.y * player.GetData().recoveryMultiplier));
@@ -72,7 +76,7 @@ namespace States
         public override void DoAction()
         {
             if (!stateMachine.canPunch) return;
-            
+            player.SetAnimationBool("IsCharging",true);
             stateMachine.canMove = false;
             player.SetVelocity(new Vector2(0,-1.5f));
             player.GetRigidBody().useGravity = false;
@@ -97,6 +101,11 @@ namespace States
         {
             if (!stateMachine.canPunch) return;
             
+            player.SetAnimationBool("IsCharging",false);
+            player.SetAnimationTrigger("Launch");
+            
+            player.EnableFistCollider(true);
+            
             var duration = Time.time - stateMachine.GetActualTime();
             
             player.SetForceToFist(player.GetForceOnTime(duration));
@@ -119,14 +128,19 @@ namespace States
 
         public override void DoAction()
         {
-            //desactivar gravedad x segundos
-            //Lanzar en direccion de golpe
-            //Jugador pierde control
+            player.GetRigidBody().useGravity = true;
+            stateMachine.canJump = false;
+            stateMachine.canMove = false;
+            stateMachine.canPunch = false;
+            player.EnableFistCollider(false);
+            
+            player.SetAnimationTrigger("Hit");
         }
 
         public override void ExitState()
         {
-            //Reiniciar inercias
+            stateMachine.canPunch = true;
+            stateMachine.ChangeState(StateType.OnRecovery);
         }
     }
     
@@ -137,6 +151,9 @@ namespace States
         public override void DoAction()
         {
             if (!stateMachine.canPunch) return;
+            
+            player.SetAnimationBool("IsCharging",true);
+            
             stateMachine.canMove = false;
             player.SetVelocity(new Vector2(0, -1.5f));
             player.GetRigidBody().useGravity = false;
@@ -160,6 +177,11 @@ namespace States
         public override void DoAction()
         {
             if (!stateMachine.canPunch) return;
+            
+            player.SetAnimationBool("IsCharging",false);
+            player.SetAnimationTrigger("Launch");
+            
+            player.EnableFistCollider(true);
             
             var duration = Time.time - stateMachine.GetActualTime();
             

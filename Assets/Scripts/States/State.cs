@@ -1,5 +1,6 @@
 //[RequireComponent(typeof(StateMachine))]
 
+using PlayerComponents;
 using UnityEngine;
 
 namespace States

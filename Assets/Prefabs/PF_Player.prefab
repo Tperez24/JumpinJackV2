@@ -314,7 +314,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3574438359818586186}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 0ec4bcfeb058c494db9e195a4ce6f5ce, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -692,6 +692,26 @@ CapsuleCollider:
   m_Height: 1.62127
   m_Direction: 1
   m_Center: {x: 0, y: 0.7997199, z: 0.05287403}
+--- !u!95 &4678388386456095975
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2150023189615654635}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5df7a60f0b804aa4e9e48b57b642acd6, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &1409722318249364474
 MonoBehaviour:
   m_ObjectHideFlags: 0

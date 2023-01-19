@@ -1,4 +1,5 @@
 using System;
+using PlayerComponents;
 using UnityEngine;
 
 namespace States

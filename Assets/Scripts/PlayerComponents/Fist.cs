@@ -8,7 +8,12 @@ namespace PlayerComponents
         {
             public Player player;
             private float _force;
+            private Collider _ownCollider;
 
+            private void Awake() => TryGetComponent(out _ownCollider);
+
+            public Collider GetCollider() => _ownCollider;
+            
             public void SetForce(float force) => _force = force;
 
             private void OnCollisionEnter(Collision collision)
