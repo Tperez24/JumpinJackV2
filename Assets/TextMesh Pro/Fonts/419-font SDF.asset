@@ -59,9 +59,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
   m_Name: 419-font SDF
   m_EditorClassIdentifier: 
-  hashCode: 0
+  hashCode: 587888147
   material: {fileID: 2895512526827244631}
-  materialHashCode: 0
+  materialHashCode: -226555949
   m_Version: 1.1.0
   m_SourceFontFileGUID: 9f363773e5654e64aa6b5ba69083098f
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: 9f363773e5654e64aa6b5ba69083098f,
@@ -5393,7 +5393,7 @@ MonoBehaviour:
     atlasHeight: 1024
     characterSetSelectionMode: 6
     characterSequence: 20-7E,A0-FF,2000-200F,2012-2022,2026,202A-2030,2032-2034,2039-203A,203C,203E,2044,205E,206A-206F,20AC,2122,25A1
-    referencedFontAssetGUID: a63f5803f6ff24e40a217ad294945132
+    referencedFontAssetGUID: 
     referencedTextAssetGUID: 
     fontStyle: 0
     fontStyleModifier: 0
@@ -5497,9 +5497,9 @@ Material:
     - _OutlineWidth: 0
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
-    - _ScaleRatioA: 1
-    - _ScaleRatioB: 1
-    - _ScaleRatioC: 1
+    - _ScaleRatioA: 0.9
+    - _ScaleRatioB: 0.73125
+    - _ScaleRatioC: 0.73125
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
