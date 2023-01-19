@@ -72,7 +72,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Dissolve: 0
     - _FrenelAmount: 0.62
+    - _Intensity: 0
     - _IsTextured: 1
     - _QueueControl: 0
     - _QueueOffset: 0
@@ -83,7 +85,7 @@ Material:
     - _TilingMix: 1.71
     m_Colors:
     - _Color: {r: 0.3207547, g: 0.26122582, b: 0.20122819, a: 0}
-    - _EmissiveCol: {r: 0, g: 0, b: 0, a: 0}
+    - _EmissiveCol: {r: 0.5019608, g: 5.992157, b: 4.329412, a: 0}
     - _FresnelColor: {r: 0, g: 0, b: 0, a: 0}
     - _ShadowColor: {r: 0.22272162, g: 0.3301887, b: 0.2466032, a: 0}
   m_BuildTextureStacks: []
