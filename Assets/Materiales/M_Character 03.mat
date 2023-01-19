@@ -73,6 +73,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _FrenelAmount: 0.7
+    - _Intensity: 0
     - _IsTextured: 0
     - _QueueControl: 0
     - _QueueOffset: 0
