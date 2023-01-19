@@ -12,6 +12,8 @@ namespace States
             stateMachine.canJump = true;
             MoveAndGravity(true);
             
+            player.RotatePlayer();
+            
             player.SetAnimationBool("OnGround",true);
             player.SetAnimationBool("Recovery",false);
 
@@ -39,6 +41,8 @@ namespace States
                 stateMachine.canJump = true;
             }
             
+            player.RotatePlayer();
+            
             player.SetAnimationBool("Recovery",true);
             player.SetAnimationBool("Launch",false);
             
@@ -59,6 +63,8 @@ namespace States
         {
             //Movimiento leve
             if (!stateMachine.canJump) return;
+            
+            player.RotatePlayer();
             
             player.SetAnimationBool("OnGround",false);
             player.SetAnimationBool("Recovery",false);
@@ -137,6 +143,7 @@ namespace States
         {
             player.ResizeSprite();
             
+            player.RotatePlayer();
             player.GetRigidBody().useGravity = true;
             stateMachine.canJump = false;
             stateMachine.canMove = false;
@@ -216,11 +223,22 @@ namespace States
         public override void DoAction()
         {
             //Ocultar malla, reposicionar, esperar x segundos
+            player.HideMesh();
+            player.ReturnToSpawn();
+            player.ShowMesh();
+            player.SetInmortal(true);
+            player.SetVelocity(Vector2.zero);
+            stateMachine.canMove = false;
+            stateMachine.canJump = false;
+            player.SetAnimationTrigger("Dead");
         }
 
         public override void ExitState()
         {
-            //Habilitar malla
+            player.SetInmortal(false);
+            stateMachine.canMove = true;
+            stateMachine.canJump = true;
+            stateMachine.ChangeState(StateType.OnGround);
         }
     }
 }

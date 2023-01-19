@@ -37,11 +37,13 @@ public class Creator : MonoBehaviour
         {
             playerBehaviour.gameObject.transform.position = firstPlayerSpawn.position;
             playerBehaviour.SetMaterial(firstPlayerMaterial);
+            playerBehaviour.SetSpawnPoint(firstPlayerSpawn.position);
         }
         else
         {
             playerBehaviour.gameObject.transform.position = secondPlayerSpawn.position;
             playerBehaviour.SetMaterial(secondPlayerMaterial);
+            playerBehaviour.SetSpawnPoint(secondPlayerSpawn.position);
         }
         
         _playerIndex++;

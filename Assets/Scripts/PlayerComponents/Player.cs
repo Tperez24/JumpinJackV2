@@ -12,7 +12,11 @@ namespace PlayerComponents
     public class Player : MonoBehaviour
     {
         public Rigidbody playerRb;
-    
+
+        private Vector3 _spawnPoint;
+
+        public Transform lookAtPoint;
+        
         public GameObject pointer;
         public int playerIndex;
         public SkinnedMeshRenderer mRenderer;
@@ -20,6 +24,7 @@ namespace PlayerComponents
         public TextMeshProUGUI txtMeshPro;
         public Fist fist;
         public Animator animator;
+        public Collider capsule, foot;
 
         private Vector2 _direction,_lastPunchDirection;
         private GameData _data;
@@ -57,13 +62,10 @@ namespace PlayerComponents
         {
             SetAnimatorFloat("XPosition",playerRb.velocity.x);
 
-            /*if (direction.x < 0) RotatePlayer(new Vector3(1,1,-1), true);
-            else RotatePlayer(new Vector3(1, 1, 1), false);*/
-
             playerRb.velocity = new Vector3 (-direction.x * _data.moveMultiplier, playerRb.velocity.y, direction.y * _data.moveMultiplier);
         }
 
-        private void RotatePlayer(Vector3 scale, bool flip)
+        private void FlipPlayer(Vector3 scale, bool flip)
         {
             animator.gameObject.transform.localScale = scale;
             punchSprite.flipY = flip;
@@ -97,28 +99,30 @@ namespace PlayerComponents
         {
             var pointerPos = GetPointerPos();
             var ownPos = GetOwnPos();
-            var dir = GetDir(pointerPos, ownPos);
+            var normalizedDir = GetDir(pointerPos, ownPos);
+            var dir = (pointerPos - ownPos);
             var distance = Vector2.Distance(pointerPos, ownPos);
-
-            /*if (dir.x > 0) RotatePlayer(new Vector3(1,1,-1), true);
-            else RotatePlayer(new Vector3(1, 1, 1), false);*/
             
-            _lastPunchDirection = dir;
+            //animator.gameObject.transform.eulerAngles = new Vector3(Mathf.Rad2Deg * Mathf.Atan((dir.y / dir.x)), -90, 0);
+
+            Debug.Log(new Vector3(Mathf.Rad2Deg * Mathf.Atan((dir.y / dir.x)), -90, 0));
+            
+            _lastPunchDirection = normalizedDir;
             
             RaycastHit hit;
         
-            if (Physics.Raycast(transform.position, dir, out hit,distance) && IsOnGround(hit.collider.gameObject))
+            if (Physics.Raycast(transform.position, normalizedDir, out hit,distance) && IsOnGround(hit.collider.gameObject))
             {
-                if (IsInAngle(Vector3.Dot(-transform.up, dir)))
+                if (IsInAngle(Vector3.Dot(-transform.up, normalizedDir)))
                 {
                     SetVelocity(Vector3.zero);
-                    AddForce(-dir * _data.bounceForce,ForceMode.Impulse,EndCooldownLaunch);
+                    AddForce(-normalizedDir * _data.bounceForce,ForceMode.Impulse,EndCooldownLaunch);
                     StartRecovery(recoveryDuration);
                     return;
                 }
             }
         
-            AddForce(dir  *  force,ForceMode.Impulse,EndCooldownLaunch);
+            AddForce(normalizedDir  *  force,ForceMode.Impulse,EndCooldownLaunch);
             StartCoroutine(StartCooldown(() => SetAnimationBool("Launch", false),recoveryDuration));
             StartRecovery(recoveryDuration);
         }
@@ -158,8 +162,7 @@ namespace PlayerComponents
 
         private void OnCollisionEnter(Collision collision)
         {
-            //TODO on ground aqui
-            if (IsOnGround(collision.gameObject) && !InThisState(StateType.OnChargingPunchAir) && !InThisState(StateType.OnHitStun) && (!InThisState(StateType.OnGround))) _stateMachine.ChangeState(StateType.OnGround);
+            if (IsOnGround(collision.gameObject) && !InThisState(StateType.OnChargingPunchAir) && !InThisState(StateType.OnHitStun) && !InThisState(StateType.OnGround) && !InThisState(StateType.OnDeath)) _stateMachine.ChangeState(StateType.OnGround);
             if (collision.gameObject.CompareTag(TagNames.Player)) playerRb.useGravity = true;
         }
 
@@ -180,10 +183,10 @@ namespace PlayerComponents
 
             if (!InThisState(StateType.OnHitStun))
             {
-                if(playerRb.velocity.x < 0) RotatePlayer(new Vector3(1,1,1),false);
+                if(playerRb.velocity.x < 0) FlipPlayer(new Vector3(1,1,1),false);
                 else if(playerRb.velocity.x > 0)
                 {
-                    RotatePlayer(new Vector3(1,1,-1),true);
+                    FlipPlayer(new Vector3(1,1,-1),true);
                 }
             }
             
@@ -201,6 +204,13 @@ namespace PlayerComponents
         {
             playerRb.AddForce(dir,mode);
             StartCoroutine(StartCooldown(action,_data.punchCooldown));
+            
+            if(InThisState(StateType.OnAir)) return;
+            /*StartCoroutine(StartCooldown(() =>
+            {
+                animator.gameObject.transform.LookAt(lookAtPoint);
+                lookAtPoint.transform.localPosition = Vector3.zero;
+            },0.1f));*/
         }
 
         private static IEnumerator StartCooldown(Action onCooldownEnd,float time)
@@ -247,8 +257,8 @@ namespace PlayerComponents
         {
             Debug.Log("Me golpiaste" + force + direction);
             
-            if (direction.x < 0) RotatePlayer(new Vector3(1,1,-1), true);
-            else RotatePlayer(new Vector3(1, 1, 1), false);
+            if (direction.x < 0) FlipPlayer(new Vector3(1,1,-1), true);
+            else FlipPlayer(new Vector3(1, 1, 1), false);
             
             _stateMachine.ChangeState(StateType.OnHitStun);
             StartCoroutine(StartCooldown(() => _stateMachine.ExitState(),1f));
@@ -262,5 +272,43 @@ namespace PlayerComponents
         public void SetAnimationBool(string trigger,bool b) => animator.SetBool(trigger,b);
 
         private void SetAnimatorFloat(string trigger, float value) => animator.SetFloat(trigger, value);
+
+        public void SetSpawnPoint(Vector3 point) => _spawnPoint = point;
+        public void ReturnToSpawn() => transform.position = _spawnPoint;
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.CompareTag(TagNames.DeathWall))
+            {
+                _stateMachine.ChangeState(StateType.OnDeath);
+                StartCoroutine(StartCooldown(() => _stateMachine.ExitState(), 1.5f));
+                _direction = Vector2.zero;
+            }
+        }
+
+        public void RotatePlayer()
+        {
+            /*lookAtPoint.localPosition = new Vector3(0, 0, 0);
+            animator.transform.eulerAngles = new Vector3(0,-90,0);*/
+        }
+
+        public void HideMesh()
+        {
+            mRenderer.enabled = false;
+            fist.gameObject.SetActive(false);
+        }
+
+        public void ShowMesh()
+        {
+            mRenderer.enabled = true;
+            fist.gameObject.SetActive(true);
+            //Corutina material
+        }
+
+        public void SetInmortal(bool b)
+        {
+            capsule.enabled = !b;
+            foot.enabled = b;
+        }
     }
 }
