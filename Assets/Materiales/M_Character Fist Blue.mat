@@ -85,7 +85,7 @@ Material:
     - _ShadowSmoothness2: 1.7
     - _TilingMix: 1.71
     m_Colors:
-    - _Color: {r: 0.3207547, g: 0.26122582, b: 0.20122819, a: 0}
+    - _Color: {r: 0.21141179, g: 0.2, b: 0.32156864, a: 0}
     - _EmissiveCol: {r: 0.5019608, g: 5.992157, b: 4.329412, a: 0}
     - _FresnelColor: {r: 0, g: 0, b: 0, a: 0}
     - _ShadowColor: {r: 0.053221796, g: 0.18582082, b: 0.49056602, a: 0}
