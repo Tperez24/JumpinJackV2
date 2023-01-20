@@ -19,13 +19,10 @@ namespace States
         {
             TryGetComponent(out _player);
             _currentState = GetState(initialState);
-            //_currentState.enabled = true;
         }
 
         public void ChangeState(StateType state)
         {
-            //_currentState.enabled = false;
-            
             var newState = GetState(state);
             
             if(_currentState == newState) return;
@@ -33,7 +30,6 @@ namespace States
             _currentType = state;
             _currentState = newState;
             _currentState.DoAction();
-            //_currentState.enabled = true;
         }
 
         public void ExitState() => _currentState.ExitState();
