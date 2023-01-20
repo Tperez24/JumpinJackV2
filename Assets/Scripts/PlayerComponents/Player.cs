@@ -457,5 +457,23 @@ namespace PlayerComponents
         }
 
         private void PlayOneShot(AudioClip audioClip) => audioSource.PlayOneShot(audioClip);
+
+        public void StartAppearCoroutine()
+        {
+            StartCoroutine(StartCooldown(() =>
+            {
+                ShowMesh();
+                SetInmortal(true);
+                SetVelocity(Vector2.zero);
+                _stateMachine.canMove = false;
+                _stateMachine.isCharging = false;
+                _stateMachine.canJump = false;
+                SetAnimationBool("IsCharging",_stateMachine.isCharging);
+                SetAnimationTrigger("Dead");
+                launchPunchParticle.SetActive(false);
+                SetInmortal(false);
+            },1.5f) );
+
+        }
     }
 }

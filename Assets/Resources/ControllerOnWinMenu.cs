@@ -12,9 +12,7 @@ public class ControllerOnWinMenu : MonoBehaviour
         private void Start()
         {
             var controller = GetComponent<PlayerInput>();
-
             
-                
             _jugar = GameObject.Find("Volver");
             _salir = GameObject.Find("Menu");
             

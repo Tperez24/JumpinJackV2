@@ -205,14 +205,8 @@ namespace States
             //Ocultar malla, reposicionar, esperar x segundos
             Player.HideMesh();
             Player.ReturnToSpawn();
-            Player.ShowMesh();
-            Player.SetInmortal(true);
-            Player.SetVelocity(Vector2.zero);
-            StateMachine.canMove = false;
-            StateMachine.isCharging = false;
-            StateMachine.canJump = false;
-            Player.SetAnimationBool("IsCharging",StateMachine.isCharging);
-            Player.SetAnimationTrigger("Dead");
+            Player.StartAppearCoroutine();
+           
         }
 
         public override void ExitState()
