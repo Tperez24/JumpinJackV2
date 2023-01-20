@@ -1880,10 +1880,8 @@ MonoBehaviour:
   audioSource: {fileID: 3096463012089573642}
   dieAudio: {fileID: 8300000, guid: 5ff89d71368a7a2488c8cd60402d5f05, type: 3}
   hitAudio: {fileID: 8300000, guid: e9b9d85fe62ac7343ac073e95923867e, type: 3}
-  getHitAudio: {fileID: 0}
   chargeAudio: {fileID: 8300000, guid: 0fb8023233474594fa7fc68012022dd7, type: 3}
-  hitGroundAudio: {fileID: 0}
-  jumpAudio: {fileID: 0}
+  jumpAudio: {fileID: 8300000, guid: eb5ee19fab6ef6d45861bf1dfaecf491, type: 3}
   finalChargeAudio: {fileID: 8300000, guid: 679474409153b9f47b4e9d2823655bca, type: 3}
   launchAudio: {fileID: 8300000, guid: d62e63a776beb444599eab93adeee490, type: 3}
 --- !u!136 &4605738780764951515

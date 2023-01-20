@@ -5,5 +5,6 @@
         public static string Ground = "Ground";
         public static string Player = "Player";
         public static string DeathWall = "DEathWall";
+        public static string DeathParticles = "ZoneDeathParticles";
     }
 }

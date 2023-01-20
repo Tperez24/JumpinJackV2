@@ -15,6 +15,7 @@ namespace PlayerComponents
         public Rigidbody playerRb;
 
         private Vector3 _spawnPoint;
+        private Vector3 _deathPos;
 
         public Transform lookAtPoint;
 
@@ -132,7 +133,10 @@ namespace PlayerComponents
 
         public void Jump()
         {
-            if(InThisState(StateType.OnGround) || InThisState(StateType.OnRecovery)) _stateMachine.ChangeState(StateType.OnAir);
+            if (!InThisState(StateType.OnGround) && !InThisState(StateType.OnRecovery)) return;
+            
+            PlayOneShot(jumpAudio);
+            _stateMachine.ChangeState(StateType.OnAir);
         }
 
         public void Punch(float force,float recoveryDuration)
@@ -351,6 +355,11 @@ namespace PlayerComponents
 
         private void OnTriggerEnter(Collider other)
         {
+            if (other.gameObject.CompareTag(TagNames.DeathParticles))
+            {
+                _deathPos = transform.position;
+            }
+            
             if (!other.gameObject.CompareTag(TagNames.DeathWall)) return;
             
             OnLifeLost?.Invoke(_name,_life);
@@ -360,7 +369,7 @@ namespace PlayerComponents
             SetAnimatorFloat("XPosition",0);
             chargeParticle.SetActive(false);
             PlayOneShot(dieAudio);
-            var ps = Instantiate(deathParticle, transform.position, quaternion.identity);
+            var ps = Instantiate(deathParticle, _deathPos, quaternion.identity);
             Destroy(ps,2);
             _stateMachine.ChangeState(StateType.OnDeath);
             StartCoroutine(StartCooldown(() =>
@@ -425,7 +434,7 @@ namespace PlayerComponents
             }
             _materialPropertyBlock.SetFloat(property, lerp.y);
         }
-        
-        public void PlayOneShot(AudioClip audioClip) => audioSource.PlayOneShot(audioClip);
+
+        private void PlayOneShot(AudioClip audioClip) => audioSource.PlayOneShot(audioClip);
     }
 }
