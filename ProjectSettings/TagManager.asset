@@ -11,11 +11,11 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - PosTProcess2
+  - NoPostVFX
   - Water
   - UI
   - Post-Processing
-  - 
+  - NoPostFloor
   - 
   - 
   - 
