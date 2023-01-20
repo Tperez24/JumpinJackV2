@@ -3,12 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Others;
 using PlayerComponents;
-using Resources;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+
 
 public class CanvasManager : MonoBehaviour
 {
@@ -91,18 +90,23 @@ public class CanvasManager : MonoBehaviour
         var input = gameObject.AddComponent<PlayerInputManager>();
         input.joinBehavior = PlayerJoinBehavior.JoinPlayersWhenButtonIsPressed;
         input.notificationBehavior = PlayerNotifications.InvokeCSharpEvents;
-        input.playerPrefab = UnityEngine.Resources.Load<GameObject>("ControllerOnWin");
+        input.playerPrefab = Resources.Load<GameObject>("ControllerOnWin");
 
-        var controller = input.GetComponent<ControllerOnWinMenu>();
+        GetComponent<PlayerInputManager>().onPlayerJoined += PlayerJoined;
+    }
+
+    private void PlayerJoined(PlayerInput playerInput)
+    {
+        var controller = playerInput.GetComponent<ControllerOnWinMenu>();
         if (losser == "Blue")
         {
-            controller.redWins.SetActive(true);
-            controller.blueWins.SetActive(false);
+            controller.red= true;
+            controller.blue= false;
         }
         else
         {
-            controller.redWins.SetActive(false);
-            controller.blueWins.SetActive(true);
+            controller.red = false;
+            controller.blue= true;
         }
     }
 }

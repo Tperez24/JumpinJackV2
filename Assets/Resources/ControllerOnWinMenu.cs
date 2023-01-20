@@ -2,12 +2,12 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-namespace Resources
+public class ControllerOnWinMenu : MonoBehaviour
 {
-    public class ControllerOnWinMenu : MonoBehaviour
-    {
-        public GameObject redWins;
-        public GameObject blueWins;
+    public bool red, blue;
+        
+        private GameObject redWins;
+        private GameObject blueWins;
     
         private InputAction _move,_accept;
         private GameObject _jugar, _salir;
@@ -16,6 +16,20 @@ namespace Resources
         {
             var controller = GetComponent<PlayerInput>();
 
+            blueWins = GameObject.Find("BlueBackground");
+            redWins = GameObject.Find("RedBackground");
+
+            if (blue)
+            {
+                blueWins.SetActive(true);
+                redWins.SetActive(false);
+            }
+            else
+            {
+                redWins.SetActive(true);
+                blueWins.SetActive(false);
+            }
+                
             _jugar = GameObject.Find("Volver");
             _salir = GameObject.Find("Menu");
             
@@ -86,4 +100,4 @@ namespace Resources
             _exitButtonSelected = true;
         }
     }
-}
+
