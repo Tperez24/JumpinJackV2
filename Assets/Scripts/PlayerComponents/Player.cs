@@ -50,10 +50,10 @@ namespace PlayerComponents
         public AudioSource audioSource;
         public AudioClip dieAudio,
             hitAudio,
-            getHitAudio,
             chargeAudio,
-            hitGroundAudio,
-            jumpAudio;
+            jumpAudio,
+            finalChargeAudio,
+            launchAudio;
 
         public static readonly UnityEvent<string,int> OnLifeLost = new();
         private bool InThisState(StateType state) => _stateMachine.GetCurrentState() == state;
@@ -79,6 +79,10 @@ namespace PlayerComponents
                 _stateMachine.ChangeState(StateType.OnChargingPunchGround);
                 chargeParticle.SetActive(true);
             }
+
+            audioSource.clip = chargeAudio;
+            audioSource.loop = true;
+            audioSource.Play();
         }
 
         public void Move(Vector2 direction)
@@ -133,6 +137,8 @@ namespace PlayerComponents
 
         public void Punch(float force,float recoveryDuration)
         {
+            PlaySoundPunch();
+            
             chargeParticle.SetActive(false);
             
             var pointerPos = GetPointerPos();
@@ -162,6 +168,15 @@ namespace PlayerComponents
             AddForce(normalizedDir  *  force,ForceMode.Impulse,EndCooldownLaunch);
             StartCoroutine(StartCooldown(() => SetAnimationBool("Launch", false),recoveryDuration));
             StartRecovery(recoveryDuration);
+        }
+
+        private void PlaySoundPunch()
+        {
+            audioSource.Stop();
+            audioSource.loop = false;
+            PlayOneShot(finalChargeAudio);
+            audioSource.clip = launchAudio;
+            audioSource.Play();
         }
 
         private void StartRecovery(float recoveryDuration)
@@ -313,6 +328,7 @@ namespace PlayerComponents
             
             Instantiate(hitPunchParticle, transform.position + new Vector3(0,0.75f,0) , quaternion.identity);
             chargeParticle.SetActive(false);
+            PlayOneShot(hitAudio);
             
             if (direction.x < 0) FlipPlayer(new Vector3(1,1,-1), true);
             else FlipPlayer(new Vector3(1, 1, 1), false);
@@ -335,27 +351,27 @@ namespace PlayerComponents
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.CompareTag(TagNames.DeathWall))
+            if (!other.gameObject.CompareTag(TagNames.DeathWall)) return;
+            
+            OnLifeLost?.Invoke(_name,_life);
+            _life++;
+            _direction = Vector2.zero;
+            playerRb.velocity = _direction;
+            SetAnimatorFloat("XPosition",0);
+            chargeParticle.SetActive(false);
+            PlayOneShot(dieAudio);
+            var ps = Instantiate(deathParticle, transform.position, quaternion.identity);
+            Destroy(ps,2);
+            _stateMachine.ChangeState(StateType.OnDeath);
+            StartCoroutine(StartCooldown(() =>
             {
-                OnLifeLost?.Invoke(_name,_life);
-                _life++;
-                _direction = Vector2.zero;
-                playerRb.velocity = _direction;
-                SetAnimatorFloat("XPosition",0);
-                chargeParticle.SetActive(false);
-                var ps = Instantiate(deathParticle, transform.position, quaternion.identity);
-                Destroy(ps,2);
-                _stateMachine.ChangeState(StateType.OnDeath);
-                StartCoroutine(StartCooldown(() =>
+                if (_life == 3)
                 {
-                    if (_life == 3)
-                    {
-                        Destroy(gameObject);
-                        return;
-                    }
-                    _stateMachine.ExitState();
-                }, 1.5f));
-            }
+                    Destroy(gameObject);
+                    return;
+                }
+                _stateMachine.ExitState();
+            }, 1.5f));
         }
 
         public void RotatePlayer()
