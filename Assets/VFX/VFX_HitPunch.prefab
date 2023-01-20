@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2773132541291604316}
   - component: {fileID: 2773132541291604318}
   - component: {fileID: 2773132541291604319}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Sparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4785,7 +4785,7 @@ GameObject:
   - component: {fileID: 2773132541444528155}
   - component: {fileID: 2773132541444528157}
   - component: {fileID: 2773132541444528154}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9487,7 +9487,7 @@ GameObject:
   - component: {fileID: 2773132541559559097}
   - component: {fileID: 2773132541559559099}
   - component: {fileID: 2773132541559559096}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Impact small
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14216,7 +14216,7 @@ GameObject:
   - component: {fileID: 2773132542499152545}
   - component: {fileID: 2773132542488753065}
   - component: {fileID: 556446162306627767}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14332,7 +14332,7 @@ GameObject:
   - component: {fileID: 2773132542513309679}
   - component: {fileID: 2773132542513339983}
   - component: {fileID: 3439705166025898593}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: VFX_HitPunch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19247,7 +19247,7 @@ GameObject:
   - component: {fileID: 2773132542742895302}
   - component: {fileID: 2773132542742895304}
   - component: {fileID: 2773132542742895305}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Lines
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24021,7 +24021,7 @@ GameObject:
   - component: {fileID: 8794032414907953463}
   - component: {fileID: 6376532046444275970}
   - component: {fileID: 2751786509816928448}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Ring
   m_TagString: Untagged
   m_Icon: {fileID: 0}

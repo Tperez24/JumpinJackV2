@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 42083769753580723}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: VFX_JackOPunch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 4207889148601043800}
   - component: {fileID: 7537951104344792155}
   - component: {fileID: 1096833539215511320}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: vfxgraph_MuzzleFlash06
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -170,7 +170,7 @@ VisualEffect:
           type: 3}
         m_Name: MuzzleConeABMesh
         m_Overridden: 1
-      - m_Value: {fileID: 2800000, guid: 07066e50b4316d948902691febdb0b2f, type: 3}
+      - m_Value: {fileID: 0}
         m_Name: MuzzleConeABTexture
         m_Overridden: 0
     m_Bool:

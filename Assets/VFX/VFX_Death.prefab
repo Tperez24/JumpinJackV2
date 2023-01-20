@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1652143759095011303}
   - component: {fileID: 1652143759095011288}
   - component: {fileID: 1652143759095011301}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: VFX_Death
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4875,7 +4875,7 @@ GameObject:
   - component: {fileID: 706296035568042448}
   - component: {fileID: 3200230632959378334}
   - component: {fileID: 3827264115780404086}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Circles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9757,7 +9757,7 @@ GameObject:
   - component: {fileID: 8904701818585269032}
   - component: {fileID: 7831740662026284754}
   - component: {fileID: 87980596539643272}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9872,7 +9872,7 @@ GameObject:
   - component: {fileID: 5590073728362654065}
   - component: {fileID: 348193080139423485}
   - component: {fileID: 8797081065329041583}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Stars
   m_TagString: Untagged
   m_Icon: {fileID: 0}

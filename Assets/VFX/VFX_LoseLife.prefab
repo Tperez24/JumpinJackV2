@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4916313562672512530}
   - component: {fileID: 5110717625830948458}
   - component: {fileID: 5109546825892010098}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Slash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4806,7 +4806,7 @@ GameObject:
   - component: {fileID: 4916305685828871538}
   - component: {fileID: 5085981237359035552}
   - component: {fileID: 5109764815982564926}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Slash Opposite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9598,7 +9598,7 @@ GameObject:
   - component: {fileID: 5509994443047065061}
   - component: {fileID: 5509994443047065083}
   - component: {fileID: 5509994443047065082}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Heart Break Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14309,7 +14309,7 @@ GameObject:
   - component: {fileID: 5509994443149885872}
   - component: {fileID: 5509994443149885878}
   - component: {fileID: 5509994443149885873}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Heart Break Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19021,7 +19021,7 @@ GameObject:
   - component: {fileID: 6855314210357232282}
   - component: {fileID: 6855314210357232285}
   - component: {fileID: 114566830303460284}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: VFX_LoseLife
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23774,7 +23774,7 @@ GameObject:
   - component: {fileID: 5446774492205148779}
   - component: {fileID: 1460049041855675760}
   - component: {fileID: 6058262940655856723}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Sparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28548,7 +28548,7 @@ GameObject:
   - component: {fileID: 1940054663109873238}
   - component: {fileID: 2763392541226636006}
   - component: {fileID: 8381569884986705926}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Sparks Opposite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
