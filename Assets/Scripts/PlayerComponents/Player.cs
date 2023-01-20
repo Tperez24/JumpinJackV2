@@ -16,8 +16,6 @@ namespace PlayerComponents
         private Vector3 _spawnPoint;
         private Vector3 _deathPos;
 
-        public Transform lookAtPoint;
-
         public GameObject pointer;
         public int playerIndex;
         public SkinnedMeshRenderer mRenderer;
@@ -57,7 +55,132 @@ namespace PlayerComponents
             launchAudio;
 
         public static readonly UnityEvent<string,int> OnLifeLost = new();
+
+        #region Unity Lifecycle
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (InThisState(StateType.OnLaunchPunchAir))
+            {
+                EnableFistCollider(false);
+            }
+            
+            if (IsOnGround(collision.gameObject) && !InThisState(StateType.OnChargingPunchAir) &&
+                !InThisState(StateType.OnHitStun) && !InThisState(StateType.OnGround) &&
+                !InThisState(StateType.OnDeath))
+            {
+                _stateMachine.ChangeState(StateType.OnGround);
+                launchPunchParticle.SetActive(false);
+            }
+
+            
+            if (collision.gameObject.CompareTag(TagNames.Player)) playerRb.useGravity = true;
+        }
+        
+        private void OnDrawGizmos()
+        {
+            var position = GetOwnPos();
+            var dir = GetDir(GetPointerPos(), position);
+            Gizmos.DrawRay(position,dir);
+        }
+        
+        private void FixedUpdate()
+        {
+            if (!InThisState(StateType.OnHitStun))
+            {
+                switch (playerRb.velocity.x)
+                {
+                    case < 0: FlipPlayer(new Vector3(1,1,1),false); break;
+                    case > 0: FlipPlayer(new Vector3(1,1,-1),true); break;
+                }
+            }
+            
+            if (!_stateMachine.canMove)
+                return;
+
+            MovePlayer(_direction);
+            
+            if(InThisState(StateType.OnGround) && playerRb.velocity.x != 0 && !runParticle.activeSelf) runParticle.SetActive(true);
+            if(!InThisState(StateType.OnGround) && runParticle.activeSelf) runParticle.SetActive(false);
+            if(InThisState(StateType.OnGround) && runParticle.activeSelf && playerRb.velocity.x == 0) runParticle.SetActive(false);
+        }
+        
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.CompareTag(TagNames.DeathParticles)) _deathPos = transform.position;
+
+            if (!other.gameObject.CompareTag(TagNames.DeathWall)) return;
+            
+            OnLifeLost?.Invoke(_name,_life);
+            _life++;
+            _direction = Vector2.zero;
+            playerRb.velocity = _direction;
+            SetAnimatorFloat("XPosition",0);
+            chargeParticle.SetActive(false);
+            PlayOneShot(dieAudio);
+            var ps = Instantiate(deathParticle, _deathPos, quaternion.identity);
+            Destroy(ps,2);
+            _stateMachine.ChangeState(StateType.OnDeath);
+            StartCoroutine(StartCooldown(() =>
+            {
+                if (_life == 3)
+                {
+                    Destroy(gameObject);
+                    return;
+                }
+                _stateMachine.ExitState();
+            }, 1.5f));
+        }
+
+        #endregion
+
+        #region Getters/Setters
+
         private bool InThisState(StateType state) => _stateMachine.GetCurrentState() == state;
+        private bool IsInAngle(float angle) => (angle > _data.dotAngle);
+        private Vector3 GetOwnPos() => transform.position + new Vector3(0, 0.75f, 0);
+        private Vector3 GetPointerPos() => pointer.transform.position;
+        private static Vector3 GetDir(Vector3 pointerPos, Vector3 ownPos) => (pointerPos - ownPos).normalized;
+        public static bool IsOnGround(GameObject go) => go.CompareTag(TagNames.Ground);
+        public void SetVelocity(Vector2 newVelocity) => playerRb.velocity = newVelocity;
+        public Vector3 GetVelocity() => playerRb.velocity;
+        public void SetForceToFist(float fistForce) => fist.SetForce(fistForce);
+    
+        public Rigidbody GetRigidBody() => playerRb;
+        public GameData GetData() => _data;
+        private void PlayOneShot(AudioClip audioClip) => audioSource.PlayOneShot(audioClip);
+        
+        public void SetInmortal(bool b)
+        {
+            capsule.enabled = !b;
+            foot.enabled = b;
+        }
+
+        public void SetPlayerName(string newName) => _name = newName;
+        
+        public void SetData(GameData data)
+        {
+            _initialScale = punchSprite.transform.localScale;
+            TryGetComponent(out _stateMachine);
+            _data = data;
+        }
+        
+        public Vector2 GetLastPunchDirection() => _lastPunchDirection;
+
+        public void EnableFistCollider(bool enable) => fist.GetCollider().enabled = enable;
+
+        public void SetAnimationTrigger(string trigger) => animator.SetTrigger(trigger);
+        public void SetAnimationBool(string trigger,bool b) => animator.SetBool(trigger,b);
+
+        private void SetAnimatorFloat(string trigger, float value) => animator.SetFloat(trigger, value);
+
+        public void SetSpawnPoint(Vector3 point) => _spawnPoint = point;
+        public void ReturnToSpawn() => transform.position = _spawnPoint;
+
+        #endregion
+
+        #region Utility Methods
+
         public void ApplyForce()
         {
             if (InThisState(StateType.OnChargingPunchAir) || InThisState(StateType.OnChargingPunchGround))
@@ -89,14 +212,10 @@ namespace PlayerComponents
         public void Move(Vector2 direction)
         {
             if (InThisState(StateType.OnChargingPunchAir) || InThisState(StateType.OnChargingPunchGround))
-            {
                 MovePointer(direction);
-            }
 
             if (InThisState(StateType.OnGround) || InThisState(StateType.OnAir) || InThisState(StateType.OnRecovery))
-            {
                 _direction = direction;
-            }
         }
 
         private void MovePlayer(Vector2 direction)
@@ -122,13 +241,6 @@ namespace PlayerComponents
             var color = punchSprite.color;
             punchSprite.color = new Color(color.r, color.g, color.b,
                 Vector2.Distance(new Vector2(position.x,position.y + 0.75f), pointer.transform.position));
-        }
-
-        public void SetData(GameData data)
-        {
-            _initialScale = punchSprite.transform.localScale;
-            TryGetComponent(out _stateMachine);
-            _data = data;
         }
 
         public void Jump()
@@ -167,12 +279,7 @@ namespace PlayerComponents
                     return;
                 }
             }
-        
-            
-            
-            /*Debug.Log((normalizedDir.x + " " + normalizedDir.y));
-            Debug.Log(new Vector3(Mathf.Rad2Deg * Mathf.Atan((normalizedDir.y / normalizedDir.x)), -90, 0));
-*/
+
             var angle = 0f;
             if (_direction.x != 0) angle = Mathf.Rad2Deg * Mathf.Atan((normalizedDir.y / normalizedDir.x));
 
@@ -222,40 +329,7 @@ namespace PlayerComponents
             
             } while (i < _data.forces.Last().time && _stateMachine.isCharging);
         }
-
-        private bool IsInAngle(float angle) => (angle > _data.dotAngle);
-        private Vector3 GetOwnPos() => transform.position + new Vector3(0, 0.75f, 0);
-        private Vector3 GetPointerPos() => pointer.transform.position;
-        private static Vector3 GetDir(Vector3 pointerPos, Vector3 ownPos) => (pointerPos - ownPos).normalized;
-
-        private void OnCollisionEnter(Collision collision)
-        {
-            if (InThisState(StateType.OnLaunchPunchAir))
-            {
-                EnableFistCollider(false);
-            }
-            
-            if (IsOnGround(collision.gameObject) && !InThisState(StateType.OnChargingPunchAir) &&
-                !InThisState(StateType.OnHitStun) && !InThisState(StateType.OnGround) &&
-                !InThisState(StateType.OnDeath))
-            {
-                _stateMachine.ChangeState(StateType.OnGround);
-                launchPunchParticle.SetActive(false);
-            }
-
-            
-            if (collision.gameObject.CompareTag(TagNames.Player)) playerRb.useGravity = true;
-        }
-
-        public static bool IsOnGround(GameObject go) => go.CompareTag(TagNames.Ground);
-
-        private void OnDrawGizmos()
-        {
-            var position = GetOwnPos();
-            var dir = GetDir(GetPointerPos(), position);
-            Gizmos.DrawRay(position,dir);
-        }
-
+        
         public void SetMaterial(Material mat,Material fistMat)
         {
             mRenderer.material = mat;
@@ -265,41 +339,10 @@ namespace PlayerComponents
             _materialPropertyBlock = new MaterialPropertyBlock();
         }
 
-        private void FixedUpdate()
-        {
-            if (!InThisState(StateType.OnHitStun))
-            {
-                if(playerRb.velocity.x < 0) FlipPlayer(new Vector3(1,1,1),false);
-                else if(playerRb.velocity.x > 0)
-                {
-                    FlipPlayer(new Vector3(1,1,-1),true);
-                }
-            }
-            
-            if (!_stateMachine.canMove)
-                return;
-
-            MovePlayer(_direction);
-            
-            if(InThisState(StateType.OnGround) && playerRb.velocity.x != 0 && !runParticle.activeSelf) runParticle.SetActive(true);
-            if(!InThisState(StateType.OnGround) && runParticle.activeSelf) runParticle.SetActive(false);
-            if(InThisState(StateType.OnGround) && runParticle.activeSelf && playerRb.velocity.x == 0) runParticle.SetActive(false);
-        }
-
-        public void SetVelocity(Vector2 newVelocity) => playerRb.velocity = newVelocity;
-        public Vector3 GetVelocity() => playerRb.velocity;
-    
         public void AddForce(Vector2 dir,ForceMode mode,Action action)
         {
             playerRb.AddForce(dir,mode);
             StartCoroutine(StartCooldown(action,_data.punchCooldown));
-            
-            if(InThisState(StateType.OnAir)) return;
-            /*StartCoroutine(StartCooldown(() =>
-            {
-                animator.gameObject.transform.LookAt(lookAtPoint);
-                lookAtPoint.transform.localPosition = Vector3.zero;
-            },0.1f));*/
         }
 
         private static IEnumerator StartCooldown(Action onCooldownEnd,float time)
@@ -333,11 +376,6 @@ namespace PlayerComponents
             return _data.forces.Last().recoveryTime;
         }
 
-        public void SetForceToFist(float fistForce) => fist.SetForce(fistForce);
-    
-        public Rigidbody GetRigidBody() => playerRb;
-        public GameData GetData() => _data;
-
         public void ResizeSprite()
         {
             punchSprite.transform.localScale = _initialScale;
@@ -346,7 +384,7 @@ namespace PlayerComponents
             punchSprite.color = color;
         }
 
-        public void ApplyPunchForce(float force, Vector3 direction)
+        public void ApplyPunchForce(Vector3 direction)
         {
             playerRb.useGravity = false;
             
@@ -366,49 +404,7 @@ namespace PlayerComponents
             StartCoroutine(StartCooldown(() => _stateMachine.ExitState(),1f));
         }
         
-        public Vector2 GetLastPunchDirection() => _lastPunchDirection;
-
-        public void EnableFistCollider(bool enable) => fist.GetCollider().enabled = enable;
-
-        public void SetAnimationTrigger(string trigger) => animator.SetTrigger(trigger);
-        public void SetAnimationBool(string trigger,bool b) => animator.SetBool(trigger,b);
-
-        private void SetAnimatorFloat(string trigger, float value) => animator.SetFloat(trigger, value);
-
-        public void SetSpawnPoint(Vector3 point) => _spawnPoint = point;
-        public void ReturnToSpawn() => transform.position = _spawnPoint;
-
-        private void OnTriggerEnter(Collider other)
-        {
-            if (other.gameObject.CompareTag(TagNames.DeathParticles)) _deathPos = transform.position;
-
-            if (!other.gameObject.CompareTag(TagNames.DeathWall)) return;
-            
-            OnLifeLost?.Invoke(_name,_life);
-            _life++;
-            _direction = Vector2.zero;
-            playerRb.velocity = _direction;
-            SetAnimatorFloat("XPosition",0);
-            chargeParticle.SetActive(false);
-            PlayOneShot(dieAudio);
-            var ps = Instantiate(deathParticle, _deathPos, quaternion.identity);
-            Destroy(ps,2);
-            _stateMachine.ChangeState(StateType.OnDeath);
-            StartCoroutine(StartCooldown(() =>
-            {
-                if (_life == 3)
-                {
-                    Destroy(gameObject);
-                    return;
-                }
-                _stateMachine.ExitState();
-            }, 1.5f));
-        }
-
-        public void RotatePlayer()
-        {
-            animator.gameObject.transform.eulerAngles = new Vector3(0, -90, 0);
-        }
+        public void RotatePlayer() => animator.gameObject.transform.eulerAngles = new Vector3(0, -90, 0);
 
         public void HideMesh()
         {
@@ -426,18 +422,7 @@ namespace PlayerComponents
             //Corutina material
         }
 
-        public void SetInmortal(bool b)
-        {
-            capsule.enabled = !b;
-            foot.enabled = b;
-        }
-
-        public void SetPlayerName(string newName)
-        {
-            _name = newName;
-        }
-
-        public IEnumerator ChangePropertyMaterial(float time,float min, float max,int property,Renderer renderer)
+        private IEnumerator ChangePropertyMaterial(float time,float min, float max,int property,Renderer rend)
         {
 
             var t = 0f;
@@ -449,14 +434,12 @@ namespace PlayerComponents
 
                 var constructionAmount = Mathf.Lerp(lerp.x, lerp.y, t);
                 _materialPropertyBlock.SetFloat(property, constructionAmount);
-                renderer.SetPropertyBlock(_materialPropertyBlock, 0);
+                rend.SetPropertyBlock(_materialPropertyBlock, 0);
                 
                 yield return null;
             }
             _materialPropertyBlock.SetFloat(property, lerp.y);
         }
-
-        private void PlayOneShot(AudioClip audioClip) => audioSource.PlayOneShot(audioClip);
 
         public void StartAppearCoroutine()
         {
@@ -473,7 +456,8 @@ namespace PlayerComponents
                 launchPunchParticle.SetActive(false);
                 SetInmortal(false);
             },1.5f) );
-
         }
+
+        #endregion
     }
 }

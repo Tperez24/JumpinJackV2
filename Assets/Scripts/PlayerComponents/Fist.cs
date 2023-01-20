@@ -20,7 +20,7 @@ namespace PlayerComponents
                 if (!collision.gameObject.CompareTag(TagNames.Player)) return;
                 
                 if (player.gameObject == collision.gameObject) return;
-                collision.gameObject.GetComponent<Player>().ApplyPunchForce(_force,player.GetLastPunchDirection());
+                collision.gameObject.GetComponent<Player>().ApplyPunchForce(player.GetLastPunchDirection());
             }
         }
     }
