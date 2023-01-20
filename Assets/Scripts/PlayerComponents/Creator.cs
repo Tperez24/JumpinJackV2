@@ -8,6 +8,7 @@ namespace PlayerComponents
     public class Creator : MonoBehaviour
     {
         public GameData data;
+        public ZoomCam zoomCam;
         public Transform firstPlayerSpawn, secondPlayerSpawn;
         public Material firstPlayerMaterial, secondPlayerMaterial;
         public Material firstPlayerMaterialFist, secondPlayerMaterialFist;
@@ -27,6 +28,8 @@ namespace PlayerComponents
             
             InitializePlayer(p1, device1.deviceId);
             InitializePlayer(p2, device2.deviceId);
+            
+            zoomCam.Initialize();
         }
 
         private void InitializePlayer(Component player, int device)

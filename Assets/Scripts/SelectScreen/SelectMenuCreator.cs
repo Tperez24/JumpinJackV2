@@ -52,7 +52,6 @@ namespace SelectScreen
 
         private IEnumerator StartGame()
         {
-            Debug.Log("FadeScreen");
             var newScene = SceneManager.LoadSceneAsync(2, LoadSceneMode.Additive);
             do
             {
