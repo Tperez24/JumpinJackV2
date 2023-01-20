@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
-using DefaultNamespace;
 using Others;
 using States;
 using TMPro;
@@ -147,10 +146,8 @@ namespace PlayerComponents
             Debug.Log(new Vector3(Mathf.Rad2Deg * Mathf.Atan((dir.y / dir.x)), -90, 0));
             
             _lastPunchDirection = normalizedDir;
-            
-            RaycastHit hit;
-        
-            if (Physics.Raycast(transform.position, normalizedDir, out hit,distance) && IsOnGround(hit.collider.gameObject))
+
+            if (Physics.Raycast(transform.position, normalizedDir, out var hit,distance) && IsOnGround(hit.collider.gameObject))
             {
                 if (IsInAngle(Vector3.Dot(-transform.up, normalizedDir)))
                 {

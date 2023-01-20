@@ -1,36 +1,29 @@
-//[RequireComponent(typeof(StateMachine))]
-
 using PlayerComponents;
 using UnityEngine;
 
 namespace States
 {
-        public class State //: MonoBehaviour
+        public class State
         {
-                protected StateMachine stateMachine;
-                protected Player player;
-
-                /*private void Awake()
-                {
-                StateMachine = GetComponent<StateMachine>();
-                }*/
+                protected readonly StateMachine StateMachine;
+                protected readonly Player Player;
 
                 protected State(StateMachine stateMachine,Player player)
                 {
-                        this.stateMachine = stateMachine;
-                        this.player = player;
+                        StateMachine = stateMachine;
+                        Player = player;
                 }
 
                 protected void PreparePunch()
                 {
-                        player.SetVelocity(Vector3.zero);
-                        stateMachine.canPunch = false;
+                        Player.SetVelocity(Vector3.zero);
+                        StateMachine.canPunch = false;
                 }
 
                 protected void MoveAndGravity(bool enable)
                 {
-                        stateMachine.canMove = enable;
-                        player.GetRigidBody().useGravity = enable;
+                        StateMachine.canMove = enable;
+                        Player.GetRigidBody().useGravity = enable;
                 }
 
                 public virtual void DoAction() {}

@@ -1,5 +1,4 @@
-﻿using System;
-using DefaultNamespace;
+﻿using Others;
 using UnityEngine;
 
 namespace PlayerComponents
@@ -18,11 +17,10 @@ namespace PlayerComponents
 
             private void OnCollisionEnter(Collision collision)
             {
-                if (collision.gameObject.CompareTag(TagNames.Player))
-                {
-                    if (player.gameObject == collision.gameObject) return;
-                    collision.gameObject.GetComponent<Player>().ApplyPunchForce(_force,player.GetLastPunchDirection());
-                }
+                if (!collision.gameObject.CompareTag(TagNames.Player)) return;
+                
+                if (player.gameObject == collision.gameObject) return;
+                collision.gameObject.GetComponent<Player>().ApplyPunchForce(_force,player.GetLastPunchDirection());
             }
         }
     }
