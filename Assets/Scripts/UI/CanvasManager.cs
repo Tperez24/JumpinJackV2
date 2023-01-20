@@ -3,14 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using Others;
 using PlayerComponents;
+using Resources;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class CanvasManager : MonoBehaviour
 {
     public TextMeshProUGUI timer;
     public GameData data;
+    public string losser;
     
     private float _targetTime;
     private bool _stopTimer;
@@ -24,6 +28,8 @@ public class CanvasManager : MonoBehaviour
     {
         _targetTime = data.gameTime;
         Player.OnLifeLost.AddListener(RemoveHp);
+        
+        DontDestroyOnLoad(gameObject);
     }
 
     private void RemoveHp(string player,int life)
@@ -41,7 +47,12 @@ public class CanvasManager : MonoBehaviour
             Destroy(redImages[life].inside);
             Destroy(redImages[life].outside);
         }
-        if(life == 2) TimerEnded();
+
+        if (life == 2)
+        {
+            TimerEnded();
+            losser = player;
+        }
     }
 
     private void Update()
@@ -75,7 +86,24 @@ public class CanvasManager : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(5);
         Time.timeScale = 1f;
-        
+        SceneManager.LoadScene(sceneBuildIndex: 3, LoadSceneMode.Single);
+
+        var input = gameObject.AddComponent<PlayerInputManager>();
+        input.joinBehavior = PlayerJoinBehavior.JoinPlayersWhenButtonIsPressed;
+        input.notificationBehavior = PlayerNotifications.InvokeCSharpEvents;
+        input.playerPrefab = UnityEngine.Resources.Load<GameObject>("ControllerOnWin");
+
+        var controller = input.GetComponent<ControllerOnWinMenu>();
+        if (losser == "Blue")
+        {
+            controller.redWins.SetActive(true);
+            controller.blueWins.SetActive(false);
+        }
+        else
+        {
+            controller.redWins.SetActive(false);
+            controller.blueWins.SetActive(true);
+        }
     }
 }
 
