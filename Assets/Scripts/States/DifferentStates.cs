@@ -115,6 +115,8 @@ namespace States
         public override void DoAction()
         {
             if (!stateMachine.canPunch) return;
+
+            stateMachine.canJump = false;
             
             player.SetAnimationBool("IsCharging",false);
             player.SetAnimationBool("Launch",true);
@@ -146,7 +148,6 @@ namespace States
             player.ResizeSprite();
             
             player.RotatePlayer();
-            player.GetRigidBody().useGravity = true;
             stateMachine.canJump = false;
             stateMachine.canMove = false;
             stateMachine.canPunch = false;
@@ -198,6 +199,8 @@ namespace States
             
             player.SetAnimationBool("IsCharging",false);
             player.SetAnimationBool("Launch",true);
+            
+            stateMachine.canJump = false;
             
             player.EnableFistCollider(true);
             

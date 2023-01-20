@@ -42,6 +42,7 @@ namespace PlayerComponents
         private int _life;
         private string _name;
         private Material _ownMat;
+        private MeshRenderer _fistRenderer;
         private MaterialPropertyBlock _materialPropertyBlock;
         private readonly int _intensity = Shader.PropertyToID("_Intensity");
         private readonly int _dissolve = Shader.PropertyToID("_Dissolve");
@@ -214,6 +215,7 @@ namespace PlayerComponents
         {
             mRenderer.material = mat;
             _ownMat = mat;
+            _fistRenderer = fist.GetComponent<MeshRenderer>();
             _materialPropertyBlock = new MaterialPropertyBlock();
         }
 
@@ -299,8 +301,10 @@ namespace PlayerComponents
 
         public void ApplyPunchForce(float force, Vector3 direction)
         {
-            StartCoroutine(ChangePropertyMaterial(0.25f, 0,0.75f, _intensity));
-            StartCoroutine(StartCooldown(() => StartCoroutine(ChangePropertyMaterial(0.25f, 0.75f,0, _intensity)),0.1f));
+            playerRb.useGravity = false;
+            
+            StartCoroutine(ChangePropertyMaterial(0.25f, 0,0.75f, _intensity,mRenderer));
+            StartCoroutine(StartCooldown(() => StartCoroutine(ChangePropertyMaterial(0.25f, 0.75f,0, _intensity,mRenderer)),0.1f));
             
             Instantiate(hitPunchParticle, transform.position + new Vector3(0,0.75f,0) , quaternion.identity);
             chargeParticle.SetActive(false);
@@ -366,7 +370,8 @@ namespace PlayerComponents
             if (_life == 3) return;
                 mRenderer.enabled = true;
             fist.gameObject.SetActive(true);
-            StartCoroutine(ChangePropertyMaterial(1.5f, 1,0, _dissolve));
+            StartCoroutine(ChangePropertyMaterial(1.5f, 1,0, _dissolve,mRenderer));
+            StartCoroutine(ChangePropertyMaterial(1.5f, 1,0, _dissolve,_fistRenderer));
             //Corutina material
         }
 
@@ -381,7 +386,7 @@ namespace PlayerComponents
             _name = newName;
         }
 
-        public IEnumerator ChangePropertyMaterial(float time,float min, float max,int property)
+        public IEnumerator ChangePropertyMaterial(float time,float min, float max,int property,Renderer renderer)
         {
 
             var t = 0f;
@@ -393,7 +398,7 @@ namespace PlayerComponents
 
                 var constructionAmount = Mathf.Lerp(lerp.x, lerp.y, t);
                 _materialPropertyBlock.SetFloat(property, constructionAmount);
-                mRenderer.SetPropertyBlock(_materialPropertyBlock, 0);
+                renderer.SetPropertyBlock(_materialPropertyBlock, 0);
                 
                 yield return null;
             }
