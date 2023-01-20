@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 1652143759095011289}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 706296035568042448}
@@ -9791,7 +9791,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 0.88446933, b: 0.5882353, a: 1}
-  m_Intensity: 2.738644
+  m_Intensity: 0
   m_Range: 6
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
