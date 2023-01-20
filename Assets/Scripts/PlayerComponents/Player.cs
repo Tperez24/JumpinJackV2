@@ -145,16 +145,10 @@ namespace PlayerComponents
 
             var pointerPos = GetPointerPos();
             var ownPos = GetOwnPos();
-            var normalizedDir = GetDir(pointerPos, ownPos);
-            var dir = (pointerPos - ownPos);
+            var normalizedDir = GetDir(pointerPos,  new Vector3(0, 0.75f, 0) + animator.transform.position);
             var distance = Vector2.Distance(pointerPos, ownPos);
-
-            //animator.gameObject.transform.eulerAngles = new Vector3(Mathf.Rad2Deg * Mathf.Atan((dir.y / dir.x)), -90, 0);
-
-            Debug.Log(new Vector3(Mathf.Rad2Deg * Mathf.Atan((dir.y / dir.x)), -90, 0));
-
+            
             _lastPunchDirection = normalizedDir;
-
 
             if (Physics.Raycast(transform.position, normalizedDir, out var hit,distance) && IsOnGround(hit.collider.gameObject))
             {
@@ -168,6 +162,19 @@ namespace PlayerComponents
                 }
             }
         
+            
+            
+            /*Debug.Log((normalizedDir.x + " " + normalizedDir.y));
+            Debug.Log(new Vector3(Mathf.Rad2Deg * Mathf.Atan((normalizedDir.y / normalizedDir.x)), -90, 0));
+*/
+            var angle = 0f;
+            if (_direction.x != 0) angle = Mathf.Rad2Deg * Mathf.Atan((normalizedDir.y / normalizedDir.x));
+
+            if (angle is < 35 or > 60 && (!(angle <= -35) || !(angle >= -60)))
+            {
+                animator.gameObject.transform.eulerAngles = new Vector3(angle, -90, 0);
+            }
+
             AddForce(normalizedDir  *  force,ForceMode.Impulse,EndCooldownLaunch);
             StartCoroutine(StartCooldown(() => SetAnimationBool("Launch", false),recoveryDuration));
             StartRecovery(recoveryDuration);
@@ -208,6 +215,11 @@ namespace PlayerComponents
 
         private void OnCollisionEnter(Collision collision)
         {
+            if (InThisState(StateType.OnLaunchPunchAir))
+            {
+                EnableFistCollider(false);
+            }
+            
             if (IsOnGround(collision.gameObject) && !InThisState(StateType.OnChargingPunchAir) &&
                 !InThisState(StateType.OnHitStun) && !InThisState(StateType.OnGround) &&
                 !InThisState(StateType.OnDeath))
@@ -215,6 +227,8 @@ namespace PlayerComponents
                 _stateMachine.ChangeState(StateType.OnGround);
                 launchPunchParticle.SetActive(false);
             }
+
+            
             if (collision.gameObject.CompareTag(TagNames.Player)) playerRb.useGravity = true;
         }
 
@@ -375,8 +389,7 @@ namespace PlayerComponents
 
         public void RotatePlayer()
         {
-            /*lookAtPoint.localPosition = new Vector3(0, 0, 0);
-            animator.transform.eulerAngles = new Vector3(0,-90,0);*/
+            animator.gameObject.transform.eulerAngles = new Vector3(0, -90, 0);
         }
 
         public void HideMesh()
