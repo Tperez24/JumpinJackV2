@@ -13,8 +13,6 @@ namespace UI
 {
     public class CanvasManager : MonoBehaviour
     {
-        public bool red, blue;
-        
         private GameObject redWins;
         private GameObject blueWins;
         private TextMeshProUGUI textBlue;
@@ -56,7 +54,7 @@ namespace UI
                 Destroy(redImages[life].outside);
             }
 
-            if (life == 2)
+            if (life == 2 && _stopTimer == false)
             {
                 TimerEnded();
                 losser = player;
@@ -118,14 +116,17 @@ namespace UI
             {
                 redWins.SetActive(true);
                 blueWins.SetActive(false);
-                //blueWins.GetComponentInChildren<TextMeshProUGUI>().text = data.winText[Random.Range(0, data.winText.Count)];
+               
+                textRed = redWins.GetComponentInChildren<TextMeshProUGUI>();
+                textRed.text = data.winText[Random.Range(0, data.winText.Count)];
             }
             else
             {
                 blueWins.SetActive(true);
                 redWins.SetActive(false);
-                /*textRed = redWins.GetComponentInChildren<TextMeshProUGUI>().text;
-                textRed.text = data.winText[Random.Range(0, data.winText.Count)];*/
+                
+                textBlue = blueWins.GetComponentInChildren<TextMeshProUGUI>();
+                textBlue.text = data.winText[Random.Range(0, data.winText.Count)];
             }
         }
     }
