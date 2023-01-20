@@ -50,9 +50,12 @@ namespace PlayerComponents
         public AudioSource audioSource;
         public AudioClip dieAudio,
             hitAudio,
-            gethitAudio;
+            getHitAudio,
+            chargeAudio,
+            hitGroundAudio,
+            jumpAudio;
 
-        public static UnityEvent<string,int> OnLifeLost = new UnityEvent<string,int>();
+        public static readonly UnityEvent<string,int> OnLifeLost = new();
         private bool InThisState(StateType state) => _stateMachine.GetCurrentState() == state;
         public void ApplyForce()
         {
