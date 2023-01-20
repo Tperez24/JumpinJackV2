@@ -17,9 +17,10 @@ namespace SelectScreen
         public Transform player1, player2;
         private InputAction _start;
         private int _playerIndex;
+
+        private InputDevice _device1, _device2;
         
         private void Start() => SubscribeInputs();
-
         private void OnDisable() => UnsubscribeInputs();
 
         private void SubscribeInputs() => creator.onPlayerJoined += Join;
@@ -29,11 +30,13 @@ namespace SelectScreen
         {
             switch (creator.playerCount)
             {
-                case 1:
+                case 1: 
                     SetPlayer(obj, Color.blue, player1.position);
+                    _device1 = obj.devices[0].device;
                     break;
-                case 2:
+                case 2: 
                     SetPlayer(obj, Color.red, player2.position);
+                    _device2 = obj.devices[0].device;
 
                     StartCoroutine(StartGame());
                     break;
@@ -58,7 +61,7 @@ namespace SelectScreen
         
             var newCreator = GameObject.Find("Creator").GetComponent<Creator>();
 
-            newCreator.Initialize();
+            newCreator.Initialize(_device1, _device2);
      
             foreach (var go in gameObjectsToHide) go.SetActive(false);
         }

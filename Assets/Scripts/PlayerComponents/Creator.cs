@@ -16,16 +16,16 @@ namespace PlayerComponents
         private int _playerIndex;
 
 
-        public void Initialize()
+        public void Initialize(InputDevice device1, InputDevice device2)
         {
             _controller = new PlayerController();
             _controller.Enable();
         
-            var p1 = PlayerInput.Instantiate(playerToInstantiate, controlScheme: "Gamepad", pairWithDevice: Gamepad.all[0]);
-            var p2 = PlayerInput.Instantiate(playerToInstantiate, controlScheme: "Gamepad",  pairWithDevice: Gamepad.all[1]);
+            var p1 = PlayerInput.Instantiate(playerToInstantiate, controlScheme: "Gamepad", pairWithDevice: device1);
+            var p2 = PlayerInput.Instantiate(playerToInstantiate, controlScheme: "Gamepad",  pairWithDevice: device2);
             
-            InitializePlayer(p1, Gamepad.all[0].device.deviceId);
-            InitializePlayer(p2, Gamepad.all[1].device.deviceId);
+            InitializePlayer(p1, device1.deviceId);
+            InitializePlayer(p2, device2.deviceId);
         }
 
         private void InitializePlayer(Component player, int device)
