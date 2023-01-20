@@ -4,31 +4,16 @@ using UnityEngine.SceneManagement;
 
 public class ControllerOnWinMenu : MonoBehaviour
 {
-    public bool red, blue;
-        
-        private GameObject redWins;
-        private GameObject blueWins;
+   
     
         private InputAction _move,_accept;
         private GameObject _jugar, _salir;
         private bool _playButtonSelected, _exitButtonSelected;
-        private void Awake()
+        private void Start()
         {
             var controller = GetComponent<PlayerInput>();
 
-            blueWins = GameObject.Find("BlueBackground");
-            redWins = GameObject.Find("RedBackground");
-
-            if (blue)
-            {
-                blueWins.SetActive(true);
-                redWins.SetActive(false);
-            }
-            else
-            {
-                redWins.SetActive(true);
-                blueWins.SetActive(false);
-            }
+            
                 
             _jugar = GameObject.Find("Volver");
             _salir = GameObject.Find("Menu");
