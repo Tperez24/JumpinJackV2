@@ -32,7 +32,7 @@ MonoBehaviour:
   jumpForce: 7
   punchCooldown: 1.5
   bounceForce: 20
-  moveMultiplier: 3
+  moveMultiplier: 5
   recoveryMultiplier: 0
   punchScale: {x: 3, y: 3, z: 0}
   gameTime: 300
