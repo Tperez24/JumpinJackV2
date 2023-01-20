@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
-using DefaultNamespace;
 using Others;
 using States;
 using TMPro;
@@ -66,6 +65,7 @@ namespace PlayerComponents
         public void StartCharging()
         {
             if(!_stateMachine.canPunch) return;
+            
             if (InThisState(StateType.OnAir) || InThisState(StateType.OnLaunchPunchAir) ||
                 InThisState(StateType.OnRecovery))
             {
@@ -73,25 +73,20 @@ namespace PlayerComponents
                 chargeParticle.SetActive(true);
             }
 
-            if (InThisState(StateType.OnGround) || InThisState(StateType.OnLaunchPunchGround) ||
-                InThisState(StateType.OnRecovery))
-            {
-                _stateMachine.ChangeState(StateType.OnChargingPunchGround);
-                chargeParticle.SetActive(true);
-            }
+            if (!InThisState(StateType.OnGround) && !InThisState(StateType.OnLaunchPunchGround) &&
+                !InThisState(StateType.OnRecovery)) return;
+            
+            _stateMachine.ChangeState(StateType.OnChargingPunchGround);
+            chargeParticle.SetActive(true);
         }
 
         public void Move(Vector2 direction)
         {
-            if (InThisState(StateType.OnChargingPunchAir) || InThisState(StateType.OnChargingPunchGround))
-            {
+            if (InThisState(StateType.OnChargingPunchAir) || InThisState(StateType.OnChargingPunchGround)) 
                 MovePointer(direction);
-            }
 
-            if (InThisState(StateType.OnGround) || InThisState(StateType.OnAir) || InThisState(StateType.OnRecovery))
-            {
+            if (InThisState(StateType.OnGround) || InThisState(StateType.OnAir) || InThisState(StateType.OnRecovery)) 
                 _direction = direction;
-            }
         }
 
         private void MovePlayer(Vector2 direction)
@@ -146,10 +141,8 @@ namespace PlayerComponents
             Debug.Log(new Vector3(Mathf.Rad2Deg * Mathf.Atan((dir.y / dir.x)), -90, 0));
             
             _lastPunchDirection = normalizedDir;
-            
-            RaycastHit hit;
-        
-            if (Physics.Raycast(transform.position, normalizedDir, out hit,distance) && IsOnGround(hit.collider.gameObject))
+
+            if (Physics.Raycast(transform.position, normalizedDir, out var hit,distance) && IsOnGround(hit.collider.gameObject))
             {
                 if (IsInAngle(Vector3.Dot(-transform.up, normalizedDir)))
                 {
@@ -201,7 +194,10 @@ namespace PlayerComponents
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (IsOnGround(collision.gameObject) && !InThisState(StateType.OnChargingPunchAir) && !InThisState(StateType.OnHitStun) && !InThisState(StateType.OnGround) && !InThisState(StateType.OnDeath)) _stateMachine.ChangeState(StateType.OnGround);
+            if (IsOnGround(collision.gameObject) && !InThisState(StateType.OnChargingPunchAir) 
+                    && !InThisState(StateType.OnHitStun) && !InThisState(StateType.OnGround) 
+                    && !InThisState(StateType.OnDeath)) _stateMachine.ChangeState(StateType.OnGround);
+            
             if (collision.gameObject.CompareTag(TagNames.Player)) playerRb.useGravity = true;
         }
 
@@ -228,16 +224,15 @@ namespace PlayerComponents
 
             if (!InThisState(StateType.OnHitStun))
             {
-                if(playerRb.velocity.x < 0) FlipPlayer(new Vector3(1,1,1),false);
-                else if(playerRb.velocity.x > 0)
+                switch (playerRb.velocity.x)
                 {
-                    FlipPlayer(new Vector3(1,1,-1),true);
+                    case < 0: FlipPlayer(new Vector3(1,1,1),false); break;
+                    case > 0: FlipPlayer(new Vector3(1,1,-1),true); break;
                 }
             }
             
             
-            if (!_stateMachine.canMove)
-                return;
+            if (!_stateMachine.canMove) return;
 
             MovePlayer(_direction);
             
@@ -268,10 +263,7 @@ namespace PlayerComponents
             onCooldownEnd?.Invoke();
         }
 
-        private void EndCooldownLaunch()
-        {
-            _stateMachine.canPunch = true;
-        }
+        private void EndCooldownLaunch() => _stateMachine.canPunch = true;
 
         public float GetForceOnTime(float duration)
         {
@@ -333,27 +325,26 @@ namespace PlayerComponents
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.CompareTag(TagNames.DeathWall))
+            if (!other.gameObject.CompareTag(TagNames.DeathWall)) return;
+            
+            OnLifeLost?.Invoke(_name,_life);
+            _life++;
+            _direction = Vector2.zero;
+            playerRb.velocity = _direction;
+            SetAnimatorFloat("XPosition",0);
+            chargeParticle.SetActive(false);
+            var ps = Instantiate(deathParticle, transform.position, quaternion.identity);
+            Destroy(ps,2);
+            _stateMachine.ChangeState(StateType.OnDeath);
+            StartCoroutine(StartCooldown(() =>
             {
-                OnLifeLost?.Invoke(_name,_life);
-                _life++;
-                _direction = Vector2.zero;
-                playerRb.velocity = _direction;
-                SetAnimatorFloat("XPosition",0);
-                chargeParticle.SetActive(false);
-                var ps = Instantiate(deathParticle, transform.position, quaternion.identity);
-                Destroy(ps,2);
-                _stateMachine.ChangeState(StateType.OnDeath);
-                StartCoroutine(StartCooldown(() =>
+                if (_life == 3)
                 {
-                    if (_life == 3)
-                    {
-                        Destroy(gameObject);
-                        return;
-                    }
-                    _stateMachine.ExitState();
-                }, 1.5f));
-            }
+                    Destroy(gameObject);
+                    return;
+                }
+                _stateMachine.ExitState();
+            }, 1.5f));
         }
 
         public void RotatePlayer()
@@ -391,7 +382,6 @@ namespace PlayerComponents
 
         public IEnumerator ChangePropertyMaterial(float time,float min, float max,int property,Renderer renderer)
         {
-
             var t = 0f;
             var lerp = new Vector2(min, max);
 

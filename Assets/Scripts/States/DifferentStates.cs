@@ -9,22 +9,17 @@ namespace States
 
         public override void DoAction()
         {
-            stateMachine.canJump = true;
+            StateMachine.canJump = true;
             MoveAndGravity(true);
             
-            player.RotatePlayer();
+            Player.RotatePlayer();
             
-            player.SetAnimationBool("OnGround",true);
-            player.SetAnimationBool("Recovery",false);
+            Player.SetAnimationBool("OnGround",true);
+            Player.SetAnimationBool("Recovery",false);
 
-            var velocity = player.GetVelocity();
-            var multiplier = player.GetData().recoveryMultiplier;
-            player.SetVelocity(new Vector2(velocity.x * multiplier,velocity.y * multiplier));
-        }
-
-        public override void ExitState()
-        {
-            
+            var velocity = Player.GetVelocity();
+            var multiplier = Player.GetData().recoveryMultiplier;
+            Player.SetVelocity(new Vector2(velocity.x * multiplier,velocity.y * multiplier));
         }
     }
 
@@ -33,27 +28,26 @@ namespace States
         public OnRecoveryState(StateMachine stateMachine, Player player) : base(stateMachine, player) { }
 
         public override void DoAction()
-        { 
-            RaycastHit hit;
-            player.SetAnimationBool("OnGround",false);
-            if (Physics.Raycast(player.transform.position,Vector3.down,out hit,1f) && Player.IsOnGround(hit.collider.gameObject))
+        {
+            Player.SetAnimationBool("OnGround",false);
+            if (Physics.Raycast(Player.transform.position,Vector3.down,out var hit,1f) && Player.IsOnGround(hit.collider.gameObject))
             {
-                stateMachine.canJump = true;
-                player.SetAnimationBool("OnGround",true);
+                StateMachine.canJump = true;
+                Player.SetAnimationBool("OnGround",true);
             }
             
-            player.RotatePlayer();
+            Player.RotatePlayer();
             
-            player.SetAnimationBool("Recovery",true);
-            player.SetAnimationBool("Launch",false);
+            Player.SetAnimationBool("Recovery",true);
+            Player.SetAnimationBool("Launch",false);
             
             
-            player.EnableFistCollider(false);
+            Player.EnableFistCollider(false);
             MoveAndGravity(true);
             
-            var velocity = player.GetVelocity();
-            var multiplier = player.GetData().recoveryMultiplier;
-            player.SetVelocity(new Vector2(velocity.x * multiplier,velocity.y * multiplier));
+            var velocity = Player.GetVelocity();
+            var multiplier = Player.GetData().recoveryMultiplier;
+            Player.SetVelocity(new Vector2(velocity.x * multiplier,velocity.y * multiplier));
         }
     }
     
@@ -63,26 +57,20 @@ namespace States
 
         public override void DoAction()
         {
-            //Movimiento leve
-            if (!stateMachine.canJump) return;
+            if (!StateMachine.canJump) return;
             
-            player.RotatePlayer();
+            Player.RotatePlayer();
             
-            player.SetAnimationBool("OnGround",false);
-            player.SetAnimationBool("Recovery",false);
-            player.SetAnimationTrigger("OnAir");
+            Player.SetAnimationBool("OnGround",false);
+            Player.SetAnimationBool("Recovery",false);
+            Player.SetAnimationTrigger("OnAir");
             
-            player.SetForceToFist(0);
+            Player.SetForceToFist(0);
             
             MoveAndGravity(true);
-            player.SetVelocity(new Vector2(player.GetVelocity().x,0));
-            player.AddForce(Vector3.up * player.GetData().jumpForce, ForceMode.Impulse, () => { });
-            stateMachine.canJump = !stateMachine.canJump;
-        }
-
-        public override void ExitState()
-        {
-            
+            Player.SetVelocity(new Vector2(Player.GetVelocity().x,0));
+            Player.AddForce(Vector3.up * Player.GetData().jumpForce, ForceMode.Impulse, () => { });
+            StateMachine.canJump = !StateMachine.canJump;
         }
     }
     public class OnChargingPunchGroundState : State
@@ -91,21 +79,18 @@ namespace States
 
         public override void DoAction()
         {
-            if (!stateMachine.canPunch) return;
-            player.SetAnimationBool("IsCharging",true);
-            player.SetVelocity(new Vector2(0,-1.5f));
+            if (!StateMachine.canPunch) return;
+            Player.SetAnimationBool("IsCharging",true);
+            Player.SetVelocity(new Vector2(0,-1.5f));
             MoveAndGravity(false);
 
-            stateMachine.isCharging = true;
-            player.StartGrowingSprite();
+            StateMachine.isCharging = true;
+            Player.StartGrowingSprite();
         
-            stateMachine.SetActualTime(Time.time);
+            StateMachine.SetActualTime(Time.time);
         }
 
-        public override void ExitState()
-        {
-            stateMachine.ChangeState(StateType.OnLaunchPunchGround);
-        }
+        public override void ExitState() => StateMachine.ChangeState(StateType.OnLaunchPunchGround);
     }
     
     public class OnLaunchPunchGroundState : State
@@ -114,29 +99,25 @@ namespace States
 
         public override void DoAction()
         {
-            if (!stateMachine.canPunch) return;
+            if (!StateMachine.canPunch) return;
 
-            stateMachine.canJump = false;
+            StateMachine.canJump = false;
             
-            player.SetAnimationBool("IsCharging",false);
-            player.SetAnimationBool("Launch",true);
+            Player.SetAnimationBool("IsCharging",false);
+            Player.SetAnimationBool("Launch",true);
             
-            player.EnableFistCollider(true);
+            Player.EnableFistCollider(true);
             
-            var duration = Time.time - stateMachine.GetActualTime();
+            var duration = Time.time - StateMachine.GetActualTime();
             
-            player.SetForceToFist(player.GetForceOnTime(duration));
+            Player.SetForceToFist(Player.GetForceOnTime(duration));
             
-            stateMachine.canMove = false;
+            StateMachine.canMove = false;
             PreparePunch();
-            player.Punch(player.GetForceOnTime(duration), player.GetRecoveryTime(duration));
+            Player.Punch(Player.GetForceOnTime(duration), Player.GetRecoveryTime(duration));
             
-            stateMachine.isCharging = false;
-            player.ResizeSprite();
-        }
-
-        public override void ExitState()
-        {
+            StateMachine.isCharging = false;
+            Player.ResizeSprite();
         }
     }
     public class HitStunState : State
@@ -145,22 +126,22 @@ namespace States
 
         public override void DoAction()
         {
-            player.ResizeSprite();
+            Player.ResizeSprite();
             
-            player.RotatePlayer();
-            stateMachine.canJump = false;
-            stateMachine.canMove = false;
-            stateMachine.canPunch = false;
-            player.EnableFistCollider(false);
+            Player.RotatePlayer();
+            StateMachine.canJump = false;
+            StateMachine.canMove = false;
+            StateMachine.canPunch = false;
+            Player.EnableFistCollider(false);
             
-            player.SetAnimationTrigger("Hit");
-            player.SetAnimationBool("IsCharging",false);
+            Player.SetAnimationTrigger("Hit");
+            Player.SetAnimationBool("IsCharging",false);
         }
 
         public override void ExitState()
         {
-            stateMachine.canPunch = true;
-            stateMachine.ChangeState(StateType.OnRecovery);
+            StateMachine.canPunch = true;
+            StateMachine.ChangeState(StateType.OnRecovery);
         }
     }
     
@@ -170,23 +151,20 @@ namespace States
 
         public override void DoAction()
         {
-            if (!stateMachine.canPunch) return;
+            if (!StateMachine.canPunch) return;
             
-            player.SetAnimationBool("IsCharging",true);
+            Player.SetAnimationBool("IsCharging",true);
             
-            player.SetVelocity(new Vector2(0, -1.5f));
+            Player.SetVelocity(new Vector2(0, -1.5f));
             MoveAndGravity(false);
             
-            stateMachine.isCharging = true;
-            player.StartGrowingSprite();
+            StateMachine.isCharging = true;
+            Player.StartGrowingSprite();
 
-            stateMachine.SetActualTime(Time.time);
+            StateMachine.SetActualTime(Time.time);
         }
 
-        public override void ExitState()
-        {
-            stateMachine.ChangeState(StateType.OnLaunchPunchAir);
-        }
+        public override void ExitState() => StateMachine.ChangeState(StateType.OnLaunchPunchAir);
     }
     
     public class OnLaunchPunchAirState : State
@@ -195,29 +173,25 @@ namespace States
 
         public override void DoAction()
         {
-            if (!stateMachine.canPunch) return;
+            if (!StateMachine.canPunch) return;
             
-            player.SetAnimationBool("IsCharging",false);
-            player.SetAnimationBool("Launch",true);
+            Player.SetAnimationBool("IsCharging",false);
+            Player.SetAnimationBool("Launch",true);
             
-            stateMachine.canJump = false;
+            StateMachine.canJump = false;
             
-            player.EnableFistCollider(true);
+            Player.EnableFistCollider(true);
             
-            var duration = Time.time - stateMachine.GetActualTime();
+            var duration = Time.time - StateMachine.GetActualTime();
             
-            player.SetForceToFist(player.GetForceOnTime(duration));
+            Player.SetForceToFist(Player.GetForceOnTime(duration));
             
-            stateMachine.canMove = false;
+            StateMachine.canMove = false;
             PreparePunch();
-            player.Punch(player.GetForceOnTime(duration),player.GetRecoveryTime(duration));
+            Player.Punch(Player.GetForceOnTime(duration),Player.GetRecoveryTime(duration));
             
-            stateMachine.isCharging = false;
-            player.ResizeSprite();
-        }
-
-        public override void ExitState()
-        {
+            StateMachine.isCharging = false;
+            Player.ResizeSprite();
         }
     }
     
@@ -228,24 +202,24 @@ namespace States
         public override void DoAction()
         {
             //Ocultar malla, reposicionar, esperar x segundos
-            player.HideMesh();
-            player.ReturnToSpawn();
-            player.ShowMesh();
-            player.SetInmortal(true);
-            player.SetVelocity(Vector2.zero);
-            stateMachine.canMove = false;
-            stateMachine.isCharging = false;
-            stateMachine.canJump = false;
-            player.SetAnimationBool("IsCharging",stateMachine.isCharging);
-            player.SetAnimationTrigger("Dead");
+            Player.HideMesh();
+            Player.ReturnToSpawn();
+            Player.ShowMesh();
+            Player.SetInmortal(true);
+            Player.SetVelocity(Vector2.zero);
+            StateMachine.canMove = false;
+            StateMachine.isCharging = false;
+            StateMachine.canJump = false;
+            Player.SetAnimationBool("IsCharging",StateMachine.isCharging);
+            Player.SetAnimationTrigger("Dead");
         }
 
         public override void ExitState()
         {
-            player.SetInmortal(false);
-            stateMachine.canMove = true;
-            stateMachine.canJump = true;
-            stateMachine.ChangeState(StateType.OnGround);
+            Player.SetInmortal(false);
+            StateMachine.canMove = true;
+            StateMachine.canJump = true;
+            StateMachine.ChangeState(StateType.OnGround);
         }
     }
 }
