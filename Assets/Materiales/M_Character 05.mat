@@ -72,7 +72,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Attenuation: 0
+    - _Dissolve: 0
     - _FrenelAmount: 0.7
+    - _Intensity: 0
     - _IsTextured: 0
     - _QueueControl: 0
     - _QueueOffset: 0

@@ -46,6 +46,7 @@ namespace PlayerComponents
         private MaterialPropertyBlock _materialPropertyBlock;
         private readonly int _intensity = Shader.PropertyToID("_Intensity");
         private readonly int _dissolve = Shader.PropertyToID("_Dissolve");
+        private readonly int _attenuation = Shader.PropertyToID("_Attenuation");
 
         public AudioSource audioSource;
         public AudioClip dieAudio,
@@ -271,6 +272,10 @@ namespace PlayerComponents
         private void EndCooldownLaunch()
         {
             _stateMachine.canPunch = true;
+            StartCoroutine(ChangePropertyMaterial(0.5f, 0, 1, _attenuation, _fistRenderer));
+            StartCoroutine(ChangePropertyMaterial(0.5f, 0, 1, _attenuation, mRenderer));
+            StartCoroutine(StartCooldown(() => StartCoroutine(ChangePropertyMaterial(0.5f, 1, 0, _attenuation, _fistRenderer)),0.5f));
+            StartCoroutine(StartCooldown(() => StartCoroutine(ChangePropertyMaterial(0.5f, 1, 0, _attenuation, mRenderer)),0.5f));
         }
 
         public float GetForceOnTime(float duration)
