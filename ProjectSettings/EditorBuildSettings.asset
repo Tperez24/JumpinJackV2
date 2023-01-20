@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Blocking_Platform.unity
     guid: 0e5c80f16d4cf584e9962faf3a2f5ba2
+  - enabled: 1
+    path: Assets/Scenes/EndingScreen.unity
+    guid: c3c06c7c52931084ba7d02d98756a1be
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 2edc97140f75a0e42b49fcc5bbbe617e,
       type: 2}

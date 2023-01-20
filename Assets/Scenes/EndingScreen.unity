@@ -223,7 +223,7 @@ GameObject:
   - component: {fileID: 295836535}
   - component: {fileID: 295836534}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: Volver
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -423,7 +423,7 @@ GameObject:
   - component: {fileID: 626343756}
   - component: {fileID: 626343755}
   m_Layer: 5
-  m_Name: Text Blue
+  m_Name: Text Red
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -900,7 +900,7 @@ GameObject:
   - component: {fileID: 879539864}
   - component: {fileID: 879539863}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Menu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1253,7 +1253,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1622704113
 RectTransform:
   m_ObjectHideFlags: 0

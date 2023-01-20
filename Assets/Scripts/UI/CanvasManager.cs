@@ -1,18 +1,28 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using Others;
 using PlayerComponents;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 namespace UI
 {
     public class CanvasManager : MonoBehaviour
     {
+        public bool red, blue;
+        
+        private GameObject redWins;
+        private GameObject blueWins;
+        private TextMeshProUGUI textBlue;
+        private TextMeshProUGUI textRed;
+        
         public TextMeshProUGUI timer;
         public GameData data;
+        public string losser;
     
         private float _targetTime;
         private bool _stopTimer;
@@ -26,6 +36,8 @@ namespace UI
         {
             _targetTime = data.gameTime;
             Player.OnLifeLost.AddListener(RemoveHp);
+        
+            DontDestroyOnLoad(gameObject);
         }
 
         private void RemoveHp(string player,int life)
@@ -43,8 +55,12 @@ namespace UI
                 Destroy(redImages[life].inside);
                 Destroy(redImages[life].outside);
             }
-            
-            if(life == 2) TimerEnded();
+
+            if (life == 2)
+            {
+                TimerEnded();
+                losser = player;
+            }
         }
 
         private void Update()
@@ -52,13 +68,16 @@ namespace UI
             if(_stopTimer) return;
             _targetTime -= Time.deltaTime;
 
-            var minutes = Math.Floor((int) _targetTime / 60f).ToString(CultureInfo.InvariantCulture);
-            var sec = Mathf.Ceil(_targetTime % 60).ToString(CultureInfo.InvariantCulture);
+            string minutes = Math.Floor((int) _targetTime / 60f).ToString();
+            string sec = Mathf.Ceil(_targetTime % 60).ToString();
 
             if (sec.Length == 1) sec = "0" + sec;
             if (minutes.Length == 1) minutes = "0" + minutes;
         
-            if (_targetTime <= 0.0f) TimerEnded();
+            if (_targetTime <= 0.0f)
+            {
+                TimerEnded();
+            }
 
             timer.text = minutes + " : " + sec;
         }
@@ -71,10 +90,46 @@ namespace UI
             //do your stuff here.
         }
 
-        private static IEnumerator EndGame()
+        private IEnumerator EndGame()
         {
             yield return new WaitForSecondsRealtime(5);
             Time.timeScale = 1f;
+            var newScene = SceneManager.LoadSceneAsync(sceneBuildIndex: 3, LoadSceneMode.Single);
+            
+            do
+            {
+                yield return null;
+            } while (newScene.progress != 1);
+
+            var input = gameObject.AddComponent<PlayerInputManager>();
+            input.joinBehavior = PlayerJoinBehavior.JoinPlayersWhenButtonIsPressed;
+            input.notificationBehavior = PlayerNotifications.InvokeCSharpEvents;
+            input.playerPrefab = Resources.Load<GameObject>("ControllerOnWin");
+
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            blueWins = GameObject.Find("BlueBackground");
+            redWins = GameObject.Find("RedBackground");
+
+            if (losser == "Blue")
+            {
+                redWins.SetActive(true);
+                blueWins.SetActive(false);
+               
+                textRed = redWins.GetComponentInChildren<TextMeshProUGUI>();
+                textRed.text = data.winText[Random.Range(0, data.winText.Count)];
+            }
+            else
+            {
+                blueWins.SetActive(true);
+                redWins.SetActive(false);
+                
+                textBlue = blueWins.GetComponentInChildren<TextMeshProUGUI>();
+                textBlue.text = data.winText[Random.Range(0, data.winText.Count)];
+            }
         }
     }
 

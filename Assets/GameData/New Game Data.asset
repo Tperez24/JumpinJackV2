@@ -35,3 +35,16 @@ MonoBehaviour:
   moveMultiplier: 3
   recoveryMultiplier: 0
   punchScale: {x: 3, y: 3, z: 0}
+  gameTime: 300
+  winText:
+  - "\"\xAA\""
+  - " \"Dudar es fracasar, y recibir un pu\xF1etazo gigante tambi\xE9n\""
+  - "\"La pelea m\xE1s importante se libra en el interior o algo as\xED, no s\xE9,
+    suelo pelear contra alguien\""
+  - '"La espada vuelve a ganar a la pluma"'
+  - ' "La pluma vuelve a ganar a la espada"'
+  - ' "Ganar o perder son dos caras de la misma moneda, y es importante que no caiga
+    de canto"'
+  - " \"No todas las victorias son una batalla ganada pero la mayor\xEDa s\xED\""
+  - "\"Dicen que como m\xE1s se aprende es fracasando, pero prefiero aprender ganando\""
+  - '"No se trata de ganar, si no  de no perder"'

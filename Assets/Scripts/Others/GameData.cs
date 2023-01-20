@@ -18,6 +18,8 @@ namespace Others
                 public float recoveryMultiplier;
                 public Vector3 punchScale;
                 public float gameTime = 300;
+
+                public List<string> winText;
         }
 
         [Serializable]
