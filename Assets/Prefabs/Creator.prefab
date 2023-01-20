@@ -115,6 +115,10 @@ MonoBehaviour:
   firstPlayerMaterial: {fileID: 2100000, guid: 874cf0c8dc64d024faab7db54871c676, type: 2}
   secondPlayerMaterial: {fileID: 2100000, guid: 9fe61c36a84c0804fab041dad8d15e12,
     type: 2}
+  firstPlayerMaterialFist: {fileID: 2100000, guid: 0cb5c9b0e3817fe4ca63974e4ab4ec54,
+    type: 2}
+  secondPlayerMaterialFist: {fileID: 2100000, guid: fad9b0163619ef34eb2348843a2e62a0,
+    type: 2}
   playerToInstantiate: {fileID: 5989767860982820072, guid: f93b781b5b14b5d4297866c010c0291d,
     type: 3}
 --- !u!1 &2497123787240919904

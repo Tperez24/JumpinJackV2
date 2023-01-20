@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1652143759095011303}
   - component: {fileID: 1652143759095011288}
   - component: {fileID: 1652143759095011301}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: VFX_Death
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 1652143759095011289}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 706296035568042448}
@@ -4875,7 +4875,7 @@ GameObject:
   - component: {fileID: 706296035568042448}
   - component: {fileID: 3200230632959378334}
   - component: {fileID: 3827264115780404086}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Circles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9757,7 +9757,7 @@ GameObject:
   - component: {fileID: 8904701818585269032}
   - component: {fileID: 7831740662026284754}
   - component: {fileID: 87980596539643272}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9791,7 +9791,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 0.88446933, b: 0.5882353, a: 1}
-  m_Intensity: 2.738644
+  m_Intensity: 0
   m_Range: 6
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -9872,7 +9872,7 @@ GameObject:
   - component: {fileID: 5590073728362654065}
   - component: {fileID: 348193080139423485}
   - component: {fileID: 8797081065329041583}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Stars
   m_TagString: Untagged
   m_Icon: {fileID: 0}

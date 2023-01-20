@@ -13,8 +13,6 @@ namespace UI
 {
     public class CanvasManager : MonoBehaviour
     {
-        public bool red, blue;
-        
         private GameObject redWins;
         private GameObject blueWins;
         private TextMeshProUGUI textBlue;
@@ -56,7 +54,7 @@ namespace UI
                 Destroy(redImages[life].outside);
             }
 
-            if (life == 2)
+            if (life == 2 && _stopTimer == false)
             {
                 TimerEnded();
                 losser = player;

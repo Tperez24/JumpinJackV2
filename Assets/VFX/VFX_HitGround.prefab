@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 162835607158170564}
   - component: {fileID: 9049110152113928796}
   - component: {fileID: 4080092357092839588}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: VFX_HitGround
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4773,7 +4773,7 @@ GameObject:
   - component: {fileID: 8098272368213202508}
   - component: {fileID: 3735006870067850268}
   - component: {fileID: 4774737818348208}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Ground ring
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9664,7 +9664,7 @@ GameObject:
   - component: {fileID: 4639581794193742442}
   - component: {fileID: 2160024969906619938}
   - component: {fileID: 2261988019224877722}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Debris
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9841,8 +9841,8 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.8
-      minScalar: 0.5
+      scalar: 0.65
+      minScalar: 0.35
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -10010,8 +10010,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.25
-      minScalar: 0.1
+      scalar: 0.12
+      minScalar: 0.05
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -10702,7 +10702,7 @@ ParticleSystem:
       countCurve:
         serializedVersion: 2
         minMaxState: 0
-        scalar: 20
+        scalar: 30
         minScalar: 30
         maxCurve:
           serializedVersion: 2

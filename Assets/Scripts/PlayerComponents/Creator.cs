@@ -10,6 +10,7 @@ namespace PlayerComponents
         public GameData data;
         public Transform firstPlayerSpawn, secondPlayerSpawn;
         public Material firstPlayerMaterial, secondPlayerMaterial;
+        public Material firstPlayerMaterialFist, secondPlayerMaterialFist;
         public GameObject playerToInstantiate;
     
         private PlayerController _controller;
@@ -39,16 +40,23 @@ namespace PlayerComponents
             inputHandler.SetController(_controller);
             inputHandler.Initialize(_playerIndex);
 
-            if (_playerIndex == 0) SetPlayer(playerBehaviour, firstPlayerSpawn.position, firstPlayerMaterial, "Blue");
-            else SetPlayer(playerBehaviour, secondPlayerSpawn.position, secondPlayerMaterial, "Red");
+            if (_playerIndex == 0)
+            {
+                SetPlayer(playerBehaviour, firstPlayerSpawn.position, firstPlayerMaterial, "Blue",firstPlayerMaterialFist);
+            }
+            else
+            {
+                SetPlayer(playerBehaviour, secondPlayerSpawn.position, secondPlayerMaterial, "Red",secondPlayerMaterialFist);
+            }
 
             _playerIndex++;
         }
 
-        private static void SetPlayer(Player player, Vector3 pos, Material mat, string playerName)
+        private static void SetPlayer(Player player, Vector3 pos, Material mat, string playerName,
+            Material playerMaterialFist)
         {
             player.gameObject.transform.position = pos;
-            player.SetMaterial(mat);
+            player.SetMaterial(mat,playerMaterialFist);
             player.SetSpawnPoint(pos);
             player.SetPlayerName(playerName);
         }

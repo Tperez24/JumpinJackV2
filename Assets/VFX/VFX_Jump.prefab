@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8411599508344708975}
   - component: {fileID: 7610668514506345897}
   - component: {fileID: 5388374656439542755}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Smoke 270
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4893,7 +4893,7 @@ GameObject:
   - component: {fileID: 2656066259241019453}
   - component: {fileID: 8709009622687479380}
   - component: {fileID: 1680849044924600853}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: VFX_Jump
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4908,7 +4908,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7110906034367201589}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.25, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -9748,7 +9748,7 @@ ParticleSystemRenderer:
   m_SortingFudge: 0
   m_NormalDirection: 1
   m_ShadowBias: -0.2
-  m_RenderAlignment: 0
+  m_RenderAlignment: 1
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
   m_UseCustomVertexStreams: 1
@@ -9778,7 +9778,7 @@ GameObject:
   - component: {fileID: 2670034470213939900}
   - component: {fileID: 3697984528242699753}
   - component: {fileID: 2701159748345743355}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Smoke 180
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14660,7 +14660,7 @@ GameObject:
   - component: {fileID: 2185591747228901641}
   - component: {fileID: 7421154375020595030}
   - component: {fileID: 8240578126977830798}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Smoke 90
   m_TagString: Untagged
   m_Icon: {fileID: 0}

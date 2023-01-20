@@ -41,6 +41,7 @@ namespace States
             Player.SetAnimationBool("Recovery",true);
             Player.SetAnimationBool("Launch",false);
             
+            Player.launchPunchParticle.SetActive(false);
             
             Player.EnableFistCollider(false);
             MoveAndGravity(true);

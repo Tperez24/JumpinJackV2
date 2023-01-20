@@ -3,7 +3,6 @@ using System.Collections;
 using System.Linq;
 using Others;
 using States;
-using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
@@ -23,7 +22,6 @@ namespace PlayerComponents
         public int playerIndex;
         public SkinnedMeshRenderer mRenderer;
         public SpriteRenderer punchSprite;
-        public TextMeshProUGUI txtMeshPro;
         public Fist fist;
         public Animator animator;
         public Collider capsule, foot;
@@ -33,7 +31,9 @@ namespace PlayerComponents
             hitPunchParticle,
             hitPunchGround,
             runParticle,
-            loseLifeParticle;
+            launchPunchParticle,
+            jumpParticle;
+            
 
         private Vector2 _direction,_lastPunchDirection;
         private GameData _data;
@@ -135,7 +135,10 @@ namespace PlayerComponents
         {
             if (!InThisState(StateType.OnGround) && !InThisState(StateType.OnRecovery)) return;
             
+            var jumpVfx = Instantiate(jumpParticle, transform.position, Quaternion.identity);
+            jumpVfx.transform.localEulerAngles = new Vector3(-90, 0, 0);
             PlayOneShot(jumpAudio);
+            Destroy(jumpVfx,1);
             _stateMachine.ChangeState(StateType.OnAir);
         }
 
@@ -144,18 +147,20 @@ namespace PlayerComponents
             PlaySoundPunch();
             
             chargeParticle.SetActive(false);
-            
+            launchPunchParticle.SetActive(true);
+
             var pointerPos = GetPointerPos();
             var ownPos = GetOwnPos();
             var normalizedDir = GetDir(pointerPos, ownPos);
             var dir = (pointerPos - ownPos);
             var distance = Vector2.Distance(pointerPos, ownPos);
-            
+
             //animator.gameObject.transform.eulerAngles = new Vector3(Mathf.Rad2Deg * Mathf.Atan((dir.y / dir.x)), -90, 0);
 
             Debug.Log(new Vector3(Mathf.Rad2Deg * Mathf.Atan((dir.y / dir.x)), -90, 0));
-            
+
             _lastPunchDirection = normalizedDir;
+
 
             if (Physics.Raycast(transform.position, normalizedDir, out var hit,distance) && IsOnGround(hit.collider.gameObject))
             {
@@ -218,7 +223,13 @@ namespace PlayerComponents
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (IsOnGround(collision.gameObject) && !InThisState(StateType.OnChargingPunchAir) && !InThisState(StateType.OnHitStun) && !InThisState(StateType.OnGround) && !InThisState(StateType.OnDeath)) _stateMachine.ChangeState(StateType.OnGround);
+            if (IsOnGround(collision.gameObject) && !InThisState(StateType.OnChargingPunchAir) &&
+                !InThisState(StateType.OnHitStun) && !InThisState(StateType.OnGround) &&
+                !InThisState(StateType.OnDeath))
+            {
+                _stateMachine.ChangeState(StateType.OnGround);
+                launchPunchParticle.SetActive(false);
+            }
             if (collision.gameObject.CompareTag(TagNames.Player)) playerRb.useGravity = true;
         }
 
@@ -231,18 +242,17 @@ namespace PlayerComponents
             Gizmos.DrawRay(position,dir);
         }
 
-        public void SetMaterial(Material mat)
+        public void SetMaterial(Material mat,Material fistMat)
         {
             mRenderer.material = mat;
             _ownMat = mat;
             _fistRenderer = fist.GetComponent<MeshRenderer>();
+            _fistRenderer.material = fistMat;
             _materialPropertyBlock = new MaterialPropertyBlock();
         }
 
         private void FixedUpdate()
         {
-            txtMeshPro.text = _stateMachine.GetCurrentState().ToString();
-
             if (!InThisState(StateType.OnHitStun))
             {
                 if(playerRb.velocity.x < 0) FlipPlayer(new Vector3(1,1,1),false);
@@ -251,7 +261,6 @@ namespace PlayerComponents
                     FlipPlayer(new Vector3(1,1,-1),true);
                 }
             }
-            
             
             if (!_stateMachine.canMove)
                 return;
@@ -327,8 +336,10 @@ namespace PlayerComponents
         {
             playerRb.useGravity = false;
             
-            StartCoroutine(ChangePropertyMaterial(0.25f, 0,0.75f, _intensity,mRenderer));
-            StartCoroutine(StartCooldown(() => StartCoroutine(ChangePropertyMaterial(0.25f, 0.75f,0, _intensity,mRenderer)),0.1f));
+            launchPunchParticle.SetActive(false);
+            
+            StartCoroutine(ChangePropertyMaterial(0.1f, 0,0.75f, _intensity,mRenderer));
+            StartCoroutine(StartCooldown(() => StartCoroutine(ChangePropertyMaterial(0.1f, 0.75f,0, _intensity,mRenderer)),0.1f));
             
             Instantiate(hitPunchParticle, transform.position + new Vector3(0,0.75f,0) , quaternion.identity);
             chargeParticle.SetActive(false);
@@ -355,11 +366,8 @@ namespace PlayerComponents
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.CompareTag(TagNames.DeathParticles))
-            {
-                _deathPos = transform.position;
-            }
-            
+            if (other.gameObject.CompareTag(TagNames.DeathParticles)) _deathPos = transform.position;
+
             if (!other.gameObject.CompareTag(TagNames.DeathWall)) return;
             
             OnLifeLost?.Invoke(_name,_life);

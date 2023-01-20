@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5151644823859448501}
   - component: {fileID: 1464211568921416440}
   - component: {fileID: 4382795560878698138}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Ring
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4894,7 +4894,7 @@ GameObject:
   - component: {fileID: 5824670795371433368}
   - component: {fileID: 5824670795371433375}
   - component: {fileID: 2990870103442498292}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: VFX_Charge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9775,7 +9775,7 @@ GameObject:
   - component: {fileID: 6841748713315357368}
   - component: {fileID: 6369784842822817764}
   - component: {fileID: 3176355182571784477}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Ring (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14657,7 +14657,7 @@ GameObject:
   - component: {fileID: 7575649991865765767}
   - component: {fileID: 1034700375001605414}
   - component: {fileID: 1580201275604790759}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
